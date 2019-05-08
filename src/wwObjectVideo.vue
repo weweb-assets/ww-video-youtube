@@ -1,5 +1,8 @@
 <template>
     <div class="ww-video" v-bind:class="{'ww-video-loaded' : videoLoaded}">
+        <!-- wwManager:start -->
+        <wwOrangeButton class="ww-orange-button" v-if="wwObjectCtrl.getSectionCtrl().getEditMode()"></wwOrangeButton>
+        <!-- wwManager:end -->
         <div class="ww-video-container">
             <!-- PREVIEW -->
             <div v-if="wwAttrs.wwCategory == 'background'" class="ww-video-preview" v-bind:class="{'ww-video-loaded' : videoLoaded}" v-bind:style="{'background-image' : 'url(' + wwObject.content.data.preview + ')'}"></div>
@@ -555,5 +558,3 @@ export default {
     }
 }
 </style>
-
-
