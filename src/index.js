@@ -32,7 +32,20 @@ const addComponent = function () {
             /* wwManager:start */
             cmsOptions: {
                 wwObjectHover: {
-                    pointerEvents: true
+                    pluses: false,
+                },
+                wwObjectMenu: {
+                    items: [
+                        {
+                            name: 'OPTIONS',
+                            text: {
+                                en: 'Options',
+                                fr: 'Options'
+                            },
+                            icon: 'wwi wwi-edit-other',
+                            action: 'edit'
+                        }
+                    ]
                 }
             }
             /* wwManager:end */

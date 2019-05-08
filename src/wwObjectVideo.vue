@@ -253,7 +253,220 @@ export default {
                     ratio: 1920 / 1080
                 };
             }
-        }
+        },
+        getInfoFromUrl(url) {
+            const info = {};
+            if (url.indexOf('youtube.com') != -1) {
+                info.provider = 'youtube';
+                const temp = url.split('v=')[1];
+                info.id = temp.split('?')[0];
+            } else if (url.indexOf('vimeo.com') != -1) {
+                info.provider = 'vimeo';
+                const temp = url.split('m/')[1];
+                info.id = temp.split('?')[0];
+            } else if (url.indexOf('dailymotion.com') != -1) {
+                info.provider = 'dailymotion';
+                const temp = url.split('video/')[1];
+                info.id = temp.split('?')[0];
+            } else if (url.indexOf('twitch.tv') != -1) {
+                info.provider = 'twitch';
+                const temp = url.split('tv/')[1];
+                info.id = temp.split('?')[0];
+            }
+            console.log('INFO ', info)
+            return info;
+        },
+        /*=============================================m_ÔÔ_m=============================================\
+          EDIT VIDEO
+        \================================================================================================*/
+        async edit() {
+            wwLib.wwObjectHover.setLock(this);
+
+            wwLib.wwPopups.addStory('WWVIDEO_EDIT', {
+                title: {
+                    en: 'Edit slider',
+                    fr: 'Editer le slider'
+                },
+                type: 'wwPopupList',
+                buttons: null,
+                storyData: {
+                    list: {
+                        WWVIDEO_URL: {
+                            separator: {
+                                en: 'Style',
+                                fr: 'Style'
+                            },
+                            title: {
+                                en: 'URL',
+                                fr: 'URL'
+                            },
+                            desc: {
+                                en: 'Edit video source',
+                                fr: 'Éditer la source de la vidéo'
+                            },
+                            icon: 'wwi wwi-edit-planet',
+                            shortcut: 's',
+                            next: 'WWVIDEO_URL'
+                        },
+                        EDIT_STILE: {
+                            separator: {
+                                en: 'Style',
+                                fr: 'Style'
+                            },
+                            title: {
+                                en: 'Change slider style',
+                                fr: 'Changer l\'apparence du slider'
+                            },
+                            desc: {
+                                en: 'Borders, shadow, ...',
+                                fr: 'Bordures, ombres, ...'
+                            },
+                            icon: 'wwi wwi-edit-style',
+                            shortcut: 's',
+                            next: 'WWVIDEO_STYLE'
+                        },
+                        EDIT_RATIO: {
+                            title: {
+                                en: 'Change slider ratio',
+                                fr: 'Changer le ratio du slider'
+                            },
+                            desc: {
+                                en: 'Portrait, square, landscape, ...',
+                                fr: 'Portrait, carré, paysage, ...'
+                            },
+                            icon: 'wwi wwi-ratio',
+                            shortcut: 'r',
+                            next: 'WWVIDEO_RATIO'
+                        },
+                        EDIT_ANIM: {
+                            separator: {
+                                en: 'Interaction',
+                                fr: 'Interaction'
+                            },
+                            title: {
+                                en: 'Animation',
+                                fr: 'Animation'
+                            },
+                            desc: {
+                                en: 'Change animation',
+                                fr: 'Choisir l\'animation à l\'apparition de l\'image'
+                            },
+                            icon: 'wwi wwi-anim',
+                            shortcut: 'a',
+                            next: 'ANIMATION'
+                        },
+                        EDIT_CHANGE: {
+                            title: {
+                                en: 'Change object type',
+                                fr: 'Changer le type d\'objet'
+                            },
+                            icon: 'wwi wwi-switch',
+                            shortcut: 't',
+                            next: 'SELECT_WWOBJECT'
+                        },
+                    }
+                }
+            })
+            wwLib.wwPopups.addStory('WWVIDEO_RATIO', {
+                title: {
+                    en: 'Slider Ratio',
+                    fr: 'Ratio du slider'
+                },
+                type: 'wwPopupImageRatio',
+                buttons: {
+                    NEXT: {
+                        text: {
+                            en: 'Ok',
+                            fr: 'Valider'
+                        },
+                        next: false
+                    }
+                }
+            })
+            wwLib.wwPopups.addStory('WWVIDEO_STYLE', {
+                title: {
+                    en: 'Image style',
+                    fr: 'Style de l\'image'
+                },
+                type: 'wwPopupImageStyle',
+                buttons: {
+                    OK: {
+                        text: {
+                            en: 'Ok',
+                            fr: 'Valider'
+                        },
+                        next: false
+                    }
+                }
+            })
+
+            wwLib.wwPopups.addStory('WWVIDEO_URL', {
+                title: {
+                    'en': 'EDIT URL',
+                    'fr': 'EDITEZ l\'URL',
+                },
+                type: 'wwPopupForm',
+                storyData: {
+                    fields: [
+                        {
+                            label: {
+                                en: 'Video URL :',
+                                fr: 'URL de la vidéo :'
+                            },
+                            desc: {
+                                en: 'the address on top of your browser',
+                                fr: 'l\'adresse en haut de votre navigateur'
+                            },
+                            type: 'text',
+                            key: 'url',
+                            valueData: 'url'
+                        }
+                    ]
+                },
+                buttons: {
+                    NEXT: {
+                        text: {
+                            en: 'Ok',
+                            fr: 'Ok'
+                        },
+                        next: false
+                    }
+                }
+            });
+
+            let options = {
+                firstPage: 'WWVIDEO_EDIT',
+                data: {
+                    wwObject: this.wwObject
+                }
+            }
+
+            try {
+                const result = await wwLib.wwPopups.open(options);
+
+                console.log(result)
+
+                /*=============================================m_ÔÔ_m=============================================\
+                  STYLE
+                \================================================================================================*/
+                if (typeof (result.url) != 'undefined') {
+                    const info = this.getInfoFromUrl(result.url)
+                    if (info) {
+                        this.wwObject.content.data.id = info.id;
+                        this.wwObject.content.data.provider = info.provider
+                    }
+                }
+
+                this.wwObjectCtrl.update(this.wwObject);
+
+                this.wwObjectCtrl.globalEdit(result);
+
+            } catch (error) {
+                console.log(error);
+            }
+
+            wwLib.wwObjectHover.removeLock();
+        },
     },
     mounted() {
         this.init();
@@ -288,16 +501,6 @@ export default {
     -o-transition: opacity 0.3s ease;
     transition: opacity 0.3s ease;
 }
-
-/* wwManager:start */
-.ww-orange-button {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translate(-50%, -50%);
-    z-index: 1;
-}
-/* wwManager:end */
 
 .ww-video-container {
     position: absolute;
