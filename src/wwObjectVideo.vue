@@ -9,11 +9,11 @@
 
             <!-- LOCAL -->
             <video v-if="wwObject.content.data.provider == 'local' && wwAttrs.wwCategory == 'background'" class="ww-video-element ww-local-video ww-video-bg" autoplay="true" loop="true" preload="metadata" playsinline>
-                <source v-bind:src="wwObject.content.data.id +  '#t=0.1'" type="video/mp4">
+                <source v-bind:src="wwObject.content.data.id +  '#t=0.1'" type="video/mp4" />
             </video>
 
             <video v-if="wwObject.content.data.provider == 'local' && wwAttrs.wwCategory != 'background'" class="ww-video-element ww-local-video" controlslist="nodownload" preload="metadata" playsinline v-bind:loop="wwObject.content.data.loop" v-bind:autoplay="wwObject.content.data.autoplay" v-bind:muted="wwObject.content.data.muted" v-bind:controls="wwObject.content.data.controls">
-                <source v-bind:src="wwObject.content.data.id +  '#t=0.1'" type="video/mp4">
+                <source v-bind:src="wwObject.content.data.id +  '#t=0.1'" type="video/mp4" />
             </video>
 
             <!-- YOUTUBE -->
@@ -260,6 +260,11 @@ export default {
                 info.provider = 'youtube';
                 const temp = url.split('v=')[1];
                 info.id = temp.split('?')[0];
+            } else if (url.indexOf('youtu.be') != -1) {
+                info.provider = 'youtube';
+                const temp = url.split('be/');
+                console.log('TEMP', temp)
+                info.id = temp[1].split('?')[0];
             } else if (url.indexOf('vimeo.com') != -1) {
                 info.provider = 'vimeo';
                 const temp = url.split('m/')[1];
@@ -284,8 +289,8 @@ export default {
 
             wwLib.wwPopups.addStory('WWVIDEO_EDIT', {
                 title: {
-                    en: 'Edit slider',
-                    fr: 'Editer le slider'
+                    en: 'Edit video',
+                    fr: 'Editer la vidéo'
                 },
                 type: 'wwPopupList',
                 buttons: null,
@@ -557,4 +562,13 @@ export default {
         display: none;
     }
 }
+/* wwManager:start */
+.ww-orange-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+/* wwManager:end */
 </style>
