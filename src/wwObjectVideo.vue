@@ -1,5 +1,5 @@
 <template>
-    <div class="ww-video" v-bind:class="{'ww-video-loaded' : videoLoaded}">
+    <div class="ww-video" v-bind:class="{'ww-video-loaded' : true}" :style="c_style">
         <!-- wwManager:start -->
         <wwOrangeButton class="ww-orange-button" v-if="wwObjectCtrl.getSectionCtrl().getEditMode()"></wwOrangeButton>
         <!-- wwManager:end -->
@@ -69,6 +69,13 @@ export default {
     computed: {
         wwObject() {
             return this.wwObjectCtrl.get();
+        },
+        c_style() {
+            const style = {};
+            if (this.wwAttrs.wwCategory != "background") {
+                style.paddingBottom = this.getRatio() + '%';
+            }
+            return style;
         }
     },
     watch: {
@@ -79,7 +86,7 @@ export default {
 
             this.wwLoadVideo();
         },
-        wwCheckRatio() {
+        getRatio() {
 
             //If ratio is fixed in ww-object directive, override it here
             if (this.wwAttrs.wwFixedRatio) {
@@ -105,16 +112,6 @@ export default {
 
             return this.wwObject.ratio;
         },
-        wwApplyVideoRatio() {
-
-            if (this.wwAttrs.wwCategory != "background") {
-
-                var ratio = this.wwCheckRatio();
-                this.$el.style.paddingBottom = ratio + "%";
-            }
-
-            this.videoLoaded = true;
-        },
         wwAppendPreview() {
             var wwPreviewHTML = "<div class='ww-video-preview' style='background-image:url(" + this.wwObject.content.data.preview + ")'></div>";
 
@@ -128,41 +125,15 @@ export default {
                 if (wwVideoData.provider == "local") {
                     const wwVideoHTML = document.createElement("video");
                     wwVideoHTML.appendChild(document.createElement('source', { src: this.wwObject.content.data.id + '#t=0.1', type: 'video/mp4' }));
-
-                    var self = this;
-
-                    await wwVideoHTML.addEventListener("loadedmetadata", function (e) {
-
-                        self.wwObject.content.data.videoRatio = this.videoWidth / this.videoHeight;
-
-                        self.wwApplyVideoRatio();
-
-                        return;
-                    }, false);
-
-
-                    return;
-
-
-                }
-                //EXT VIDEO
-                else {
-
-                    if (this.wwAttrs.wwCategory == "background") {
-
-                        previewAndRatio = await wwGetVideoPreviewAndRatio(wwVideoData.provider, wwVideoData.id, wwVideoData.preview);
-                        if (previewAndRatio) {
-                            this.wwObject.content.data.videoRatio = previewAndRatio.ratio;
-                        }
-                    }
-
-                    this.wwApplyVideoRatio();
                     return;
                 }
             }
             catch (e) {
 
             }
+
+
+            this.videoLoaded = true;
 
         },
         wwGetVideoPreviewAndRatio: async function (provider, videoId, videoPreview) {
@@ -297,10 +268,6 @@ export default {
                 storyData: {
                     list: {
                         WWVIDEO_URL: {
-                            separator: {
-                                en: 'Style',
-                                fr: 'Style'
-                            },
                             title: {
                                 en: 'URL',
                                 fr: 'URL'
@@ -313,27 +280,31 @@ export default {
                             shortcut: 's',
                             next: 'WWVIDEO_URL'
                         },
-                        EDIT_STILE: {
+                        // EDIT_STYLE: {
+                        //     separator: {
+                        //         en: 'Style',
+                        //         fr: 'Style'
+                        //     },
+                        //     title: {
+                        //         en: 'Change slider style',
+                        //         fr: 'Changer l\'apparence du slider'
+                        //     },
+                        //     desc: {
+                        //         en: 'Borders, shadow, ...',
+                        //         fr: 'Bordures, ombres, ...'
+                        //     },
+                        //     icon: 'wwi wwi-edit-style',
+                        //     shortcut: 's',
+                        //     next: 'WWVIDEO_STYLE'
+                        // },
+                        EDIT_RATIO: {
                             separator: {
                                 en: 'Style',
                                 fr: 'Style'
                             },
                             title: {
-                                en: 'Change slider style',
-                                fr: 'Changer l\'apparence du slider'
-                            },
-                            desc: {
-                                en: 'Borders, shadow, ...',
-                                fr: 'Bordures, ombres, ...'
-                            },
-                            icon: 'wwi wwi-edit-style',
-                            shortcut: 's',
-                            next: 'WWVIDEO_STYLE'
-                        },
-                        EDIT_RATIO: {
-                            title: {
-                                en: 'Change slider ratio',
-                                fr: 'Changer le ratio du slider'
+                                en: 'Change video ratio',
+                                fr: 'Changer le ratio de la vidéo'
                             },
                             desc: {
                                 en: 'Portrait, square, landscape, ...',
@@ -354,7 +325,7 @@ export default {
                             },
                             desc: {
                                 en: 'Change animation',
-                                fr: 'Choisir l\'animation à l\'apparition de l\'image'
+                                fr: 'Choisir l\'animation à l\'apparition de la vidéo'
                             },
                             icon: 'wwi wwi-anim',
                             shortcut: 'a',
@@ -377,7 +348,7 @@ export default {
                     en: 'Slider Ratio',
                     fr: 'Ratio du slider'
                 },
-                type: 'wwPopupImageRatio',
+                type: 'wwPopupWwObjectRatio',
                 buttons: {
                     NEXT: {
                         text: {
@@ -393,7 +364,7 @@ export default {
                     en: 'Image style',
                     fr: 'Style de l\'image'
                 },
-                type: 'wwPopupImageStyle',
+                type: 'wwPopupWwObjectStyle',
                 buttons: {
                     OK: {
                         text: {
@@ -460,6 +431,9 @@ export default {
                         this.wwObject.content.data.id = info.id;
                         this.wwObject.content.data.provider = info.provider
                     }
+                }
+                if (typeof (result.ratio) != 'undefined') {
+                    this.wwObject.ratio = result.ratio;
                 }
 
                 this.wwObjectCtrl.update(this.wwObject);

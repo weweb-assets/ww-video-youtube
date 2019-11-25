@@ -20,8 +20,7 @@ const addComponent = function () {
                     preview: "",
                     alt: {
                         "fr": "Une vidéo"
-                    },
-                    videoRatio: 16 / 9
+                    }
                 }
             },
             upsales: {
@@ -32,6 +31,7 @@ const addComponent = function () {
             /* wwManager:start */
             cmsOptions: {
                 wwObjectHover: {
+                    hoverClass: true,
                     pluses: false,
                 },
                 wwObjectMenu: {
@@ -42,6 +42,7 @@ const addComponent = function () {
                                 en: 'Options',
                                 fr: 'Options'
                             },
+                            main: true,
                             icon: 'wwi wwi-edit-other',
                             action: 'edit'
                         }
