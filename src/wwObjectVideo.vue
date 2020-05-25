@@ -35,7 +35,6 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-                loading="lazy"
             ></iframe>
 
             <iframe
@@ -55,7 +54,6 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-                loading="lazy"
             ></iframe>
 
             <!-- VIMEO -->
@@ -67,7 +65,6 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-                loading="lazy"
             ></iframe>
 
             <iframe
@@ -86,7 +83,6 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-                loading="lazy"
             ></iframe>
 
             <!-- DAILYMOTION -->
@@ -98,7 +94,6 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-                loading="lazy"
             ></iframe>
 
             <iframe
@@ -109,7 +104,6 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-                loading="lazy"
             ></iframe>
 
             <!-- TWITCH -->
@@ -121,7 +115,6 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-                loading="lazy"
             ></iframe>
 
             <iframe
@@ -132,7 +125,6 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-                loading="lazy"
             ></iframe>
         </div>
     </div>
