@@ -329,7 +329,7 @@ export default {
                     en: 'Edit video',
                     fr: 'Editer la vidéo'
                 },
-                type: 'wwPopupList',
+                type: 'wwPopupEditWwObject',
                 buttons: null,
                 storyData: {
                     list: {
