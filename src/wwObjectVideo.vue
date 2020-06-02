@@ -379,32 +379,6 @@ export default {
                             icon: 'wwi wwi-ratio',
                             shortcut: 'r',
                             next: 'WWVIDEO_RATIO'
-                        },
-                        EDIT_ANIM: {
-                            separator: {
-                                en: 'Interaction',
-                                fr: 'Interaction'
-                            },
-                            title: {
-                                en: 'Animation',
-                                fr: 'Animation'
-                            },
-                            desc: {
-                                en: 'Change animation',
-                                fr: "Choisir l'animation à l'apparition de la vidéo"
-                            },
-                            icon: 'wwi wwi-anim',
-                            shortcut: 'a',
-                            next: 'ANIMATION'
-                        },
-                        EDIT_CHANGE: {
-                            title: {
-                                en: 'Change object type',
-                                fr: "Changer le type d'objet"
-                            },
-                            icon: 'wwi wwi-switch',
-                            shortcut: 't',
-                            next: 'SELECT_WWOBJECT'
                         }
                     }
                 }
