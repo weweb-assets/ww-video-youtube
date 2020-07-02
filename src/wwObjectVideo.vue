@@ -42,13 +42,13 @@
                 class="ww-video-element"
                 v-bind:src="
                     '//www.youtube.com/embed/' +
-                        wwObject.content.data.id +
-                        '?rel=0' +
-                        (wwObject.content.data.loop ? '&loop=1&playlist=' + wwObject.content.data.id : '') +
-                        (wwObject.content.data.autoplay ? '&autoplay=1' : '') +
-                        (wwObject.content.data.muted ? '' : '') +
-                        (!wwObject.content.data.controls ? '&controls=0' : '') +
-                        (!wwObject.content.data.showinfo ? '&showinfo=0' : '')
+                    wwObject.content.data.id +
+                    '?rel=0' +
+                    (wwObject.content.data.loop ? '&loop=1&playlist=' + wwObject.content.data.id : '') +
+                    (wwObject.content.data.autoplay ? '&autoplay=1' : '') +
+                    (wwObject.content.data.muted ? '' : '') +
+                    (!wwObject.content.data.controls ? '&controls=0' : '') +
+                    (!wwObject.content.data.showinfo ? '&showinfo=0' : '')
                 "
                 frameborder="0"
                 webkitallowfullscreen
@@ -72,12 +72,12 @@
                 class="ww-video-element"
                 v-bind:src="
                     '//player.vimeo.com/video/' +
-                        wwObject.content.data.id +
-                        '?a=0' +
-                        (wwObject.content.data.loop ? '&loop=1' : '') +
-                        (wwObject.content.data.autoplay ? '&autoplay=1' : '') +
-                        (wwObject.content.data.muted ? '&mute=1' : '') +
-                        (!wwObject.content.data.controls ? '&controls=0' : '')
+                    wwObject.content.data.id +
+                    '?a=0' +
+                    (wwObject.content.data.loop ? '&loop=1' : '') +
+                    (wwObject.content.data.autoplay ? '&autoplay=1' : '') +
+                    (wwObject.content.data.muted ? '&mute=1' : '') +
+                    (!wwObject.content.data.controls ? '&controls=0' : '')
                 "
                 frameborder="0"
                 webkitallowfullscreen
@@ -126,6 +126,19 @@
                 mozallowfullscreen
                 allowfullscreen
             ></iframe>
+
+            <!-- Unknown provide -->
+            <video
+                v-if="wwObject.content.data.provider == 'other' && wwAttrs.wwCategory != 'background'"
+                v-bind:src="wwObject.content.data.id"
+                style="width: 100%; height: 100%; border: solid 1px #e2e2e2; box-shadow: 2px 6px 14px 8px rgba(0, 0, 0, 0.3);"
+                preload="auto"
+                muted=""
+                playsinline=""
+                webkit-playsinline=""
+                autoplay=""
+                loop=""
+            ></video>
         </div>
     </div>
 </template>
@@ -194,7 +207,7 @@ export default {
 
             wwVideoContainer.append(wwPreviewHTML);
         },
-        wwLoadVideo: async function() {
+        wwLoadVideo: async function () {
             try {
                 let wwVideoData = this.wwObject.content.data;
 
@@ -207,7 +220,7 @@ export default {
 
             this.videoLoaded = true;
         },
-        wwGetVideoPreviewAndRatio: async function(provider, videoId, videoPreview) {
+        wwGetVideoPreviewAndRatio: async function (provider, videoId, videoPreview) {
             let noImage = videoPreview || 'https://cdn.wewebapp.io/public/images/no_image_selected.png';
 
             let responce = null;
@@ -314,6 +327,9 @@ export default {
                 info.provider = 'twitch';
                 const temp = url.split('tv/')[1];
                 info.id = temp.split('?')[0];
+            } else {
+                info.provider = 'other';
+                info.id = url;
             }
             console.log('INFO ', info);
             return info;
