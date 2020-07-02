@@ -131,7 +131,7 @@
             <video
                 v-if="wwObject.content.data.provider == 'other' && wwAttrs.wwCategory != 'background'"
                 v-bind:src="wwObject.content.data.id"
-                style="width: 100%; height: 100%; border: solid 1px #e2e2e2; box-shadow: 2px 6px 14px 8px rgba(0, 0, 0, 0.3);"
+                style="width: 100%; height: 100%;"
                 preload="auto"
                 muted=""
                 playsinline=""
