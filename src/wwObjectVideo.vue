@@ -1,5 +1,5 @@
 <template>
-    <div class="ww-video" v-bind:class="{ 'ww-video-loaded': true }" :style="c_style">
+    <div class="ww-video" v-bind:class="{ 'ww-video-loaded': true }" :style="style">
         <!-- wwManager:start -->
         <wwOrangeButton class="ww-orange-button" v-if="wwObjectCtrl.getSectionCtrl().getEditMode()"></wwOrangeButton>
         <!-- wwManager:end -->
@@ -170,6 +170,31 @@ export default {
                 style.paddingBottom = this.getRatio() + '%';
             }
             return style;
+        },
+        style() {
+            if (!this.el) {
+                return {};
+            }
+            this.wwObject.content.data.style = this.wwObject.content.data.style || {};
+            let styles = {};
+            styles.background = this.wwObject.content.data.backgroundColor || 'transparent';
+            styles.backgroundImage = this.wwObject.content.data.gradient || '';
+            styles.paddingBottom = this.wwAttrs.wwCategory == 'background' ? '' : (Math.max(0, this.wwObject.ratio) || 66.66) + '%';
+
+            //FORMAT
+            styles.boxShadow = this.getShadow();
+
+            //BORDER
+            const w = this.$el.getBoundingClientRect().width;
+            const unit = this.wwObject.content.data.style.borderRadiusUnit || '%';
+            const borderRadius = (this.wwObject.content.data.style.borderRadius / (unit == '%' ? 2 : 1) || 0) + unit;
+            styles.borderRadius = borderRadius;
+            const borderWidth = this.wwObject.content.data.style.borderWidth ? this.wwObject.content.data.style.borderWidth : 0;
+            styles.borderWidth = borderWidth + 'px';
+            styles.borderColor = this.wwObject.content.data.style.borderColor || 'black';
+            styles.borderStyle = this.wwObject.content.data.style.borderStyle || 'none';
+
+            return styles;
         }
     },
     watch: {},
@@ -202,6 +227,15 @@ export default {
 
             return this.wwObject.ratio;
         },
+        getShadow() {
+            this.wwObject.content.data.style = this.wwObject.content.data.style || {};
+            const shadow = this.wwObject.content.data.style.boxShadow || {};
+            if (shadow.x || shadow.y || shadow.b || shadow.s || shadow.c) {
+                return shadow.x + 'px ' + shadow.y + 'px ' + shadow.b + 'px ' + shadow.s + 'px ' + shadow.c;
+            }
+            return '';
+        },
+
         wwAppendPreview() {
             var wwPreviewHTML = "<div class='ww-video-preview' style='background-image:url(" + this.wwObject.content.data.preview + ")'></div>";
 
@@ -362,28 +396,41 @@ export default {
                             shortcut: 's',
                             next: 'WWVIDEO_URL'
                         },
-                        // EDIT_STYLE: {
-                        //     separator: {
-                        //         en: 'Style',
-                        //         fr: 'Style'
-                        //     },
-                        //     title: {
-                        //         en: 'Change slider style',
-                        //         fr: 'Changer l\'apparence du slider'
-                        //     },
-                        //     desc: {
-                        //         en: 'Borders, shadow, ...',
-                        //         fr: 'Bordures, ombres, ...'
-                        //     },
-                        //     icon: 'wwi wwi-edit-style',
-                        //     shortcut: 's',
-                        //     next: 'WWVIDEO_STYLE'
-                        // },
-                        EDIT_RATIO: {
+                        EDIT_OPTIONS: {
+                            separator: {
+                                en: 'Video player',
+                                fr: 'Lecteur video'
+                            },
+                            title: {
+                                en: 'Change video player options',
+                                fr: "Changer l'apparence du lecteur video"
+                            },
+                            desc: {
+                                en: 'autoplay, control, loop ...',
+                                fr: 'autoplay, control, loop ...'
+                            },
+                            icon: 'wwi wwi-config',
+                            shortcut: 'o',
+                            next: 'WWVIDEO_OPTIONS'
+                        },
+                        EDIT_STYLE: {
                             separator: {
                                 en: 'Style',
                                 fr: 'Style'
                             },
+                            title: {
+                                en: 'Change video style',
+                                fr: "Changer l'apparence de la video"
+                            },
+                            desc: {
+                                en: 'Size, shadow, ...',
+                                fr: 'Taille, ombres, ...'
+                            },
+                            icon: 'wwi wwi-edit-style',
+                            shortcut: 's',
+                            next: 'WWVIDEO_STYLE'
+                        },
+                        EDIT_RATIO: {
                             title: {
                                 en: 'Change video ratio',
                                 fr: 'Changer le ratio de la vidéo'
@@ -396,6 +443,39 @@ export default {
                             shortcut: 'r',
                             next: 'WWVIDEO_RATIO'
                         }
+                    }
+                }
+            });
+            wwLib.wwPopups.addStory('WWVIDEO_OPTIONS', {
+                title: {
+                    en: 'Video player Options',
+                    fr: 'Paramètres du lecteur vidéo'
+                },
+                type: 'wwPopupForm',
+                storyData: {
+                    fields: [
+                        {
+                            label: {
+                                en: 'Video URL :',
+                                fr: 'URL de la vidéo :'
+                            },
+                            desc: {
+                                en: 'the address on top of your browser',
+                                fr: "l'adresse en haut de votre navigateur"
+                            },
+                            type: 'radio',
+                            key: 'url',
+                            valueData: 'url'
+                        }
+                    ]
+                },
+                buttons: {
+                    NEXT: {
+                        text: {
+                            en: 'Ok',
+                            fr: 'Ok'
+                        },
+                        next: false
                     }
                 }
             });
@@ -488,9 +568,42 @@ export default {
                         this.wwObject.content.data.provider = info.provider;
                     }
                 }
+
+                if (typeof result.borderColor != 'undefined') {
+                    this.wwObject.content.data.style.borderColor = result.borderColor;
+                }
+                if (typeof result.borderRadius != 'undefined') {
+                    this.wwObject.content.data.style.borderRadius = result.borderRadius;
+                }
+                if (typeof result.borderRadiusUnit != 'undefined') {
+                    this.wwObject.content.data.style.borderRadiusUnit = result.borderRadiusUnit;
+                }
+                if (typeof result.borderStyle != 'undefined') {
+                    this.wwObject.content.data.style.borderStyle = result.borderStyle;
+                }
+                if (typeof result.borderWidth != 'undefined') {
+                    this.wwObject.content.data.style.borderWidth = result.borderWidth;
+                }
+                if (typeof result.boxShadow != 'undefined') {
+                    this.wwObject.content.data.style.boxShadow = result.boxShadow;
+                }
+                if (typeof result.filter != 'undefined') {
+                    this.wwObject.content.data.style.filter = result.filter;
+                }
+                if (typeof result.overlay != 'undefined') {
+                    this.wwObject.content.data.style.overlay = result.overlay;
+                }
                 if (typeof result.ratio != 'undefined') {
                     this.wwObject.ratio = result.ratio;
                 }
+                if (typeof result.maxHeight != 'undefined') {
+                    this.wwObject.content.data.style.maxHeight = result.maxHeight;
+                }
+                if (typeof result.minWidth != 'undefined') {
+                    this.wwObject.content.data.style.minWidth = result.minWidth;
+                }
+
+                console.log('Results 🚀 :', this.wwObject.content.data);
 
                 this.wwObjectCtrl.update(this.wwObject);
 
