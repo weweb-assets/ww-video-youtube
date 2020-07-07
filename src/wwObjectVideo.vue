@@ -42,13 +42,13 @@
                 class="ww-video-element"
                 v-bind:src="
                     '//www.youtube.com/embed/' +
-                    wwObject.content.data.id +
-                    '?rel=0' +
-                    (wwObject.content.data.loop ? '&loop=1&playlist=' + wwObject.content.data.id : '') +
-                    (wwObject.content.data.autoplay ? '&autoplay=1' : '') +
-                    (wwObject.content.data.muted ? '' : '') +
-                    (!wwObject.content.data.controls ? '&controls=0' : '') +
-                    (!wwObject.content.data.showinfo ? '&showinfo=0' : '')
+                        wwObject.content.data.id +
+                        '?rel=0' +
+                        (wwObject.content.data.loop ? '&loop=1&playlist=' + wwObject.content.data.id : '') +
+                        (wwObject.content.data.autoplay ? '&autoplay=1' : '') +
+                        (wwObject.content.data.muted ? '' : '') +
+                        (!wwObject.content.data.controls ? '&controls=0' : '') +
+                        (!wwObject.content.data.showinfo ? '&showinfo=0' : '')
                 "
                 frameborder="0"
                 webkitallowfullscreen
@@ -72,12 +72,12 @@
                 class="ww-video-element"
                 v-bind:src="
                     '//player.vimeo.com/video/' +
-                    wwObject.content.data.id +
-                    '?a=0' +
-                    (wwObject.content.data.loop ? '&loop=1' : '') +
-                    (wwObject.content.data.autoplay ? '&autoplay=1' : '') +
-                    (wwObject.content.data.muted ? '&mute=1' : '') +
-                    (!wwObject.content.data.controls ? '&controls=0' : '')
+                        wwObject.content.data.id +
+                        '?a=0' +
+                        (wwObject.content.data.loop ? '&loop=1' : '') +
+                        (wwObject.content.data.autoplay ? '&autoplay=1' : '') +
+                        (wwObject.content.data.muted ? '&mute=1' : '') +
+                        (!wwObject.content.data.controls ? '&controls=0' : '')
                 "
                 frameborder="0"
                 webkitallowfullscreen
@@ -241,7 +241,7 @@ export default {
 
             wwVideoContainer.append(wwPreviewHTML);
         },
-        wwLoadVideo: async function () {
+        wwLoadVideo: async function() {
             try {
                 let wwVideoData = this.wwObject.content.data;
 
@@ -254,7 +254,7 @@ export default {
 
             this.videoLoaded = true;
         },
-        wwGetVideoPreviewAndRatio: async function (provider, videoId, videoPreview) {
+        wwGetVideoPreviewAndRatio: async function(provider, videoId, videoPreview) {
             let noImage = videoPreview || 'https://cdn.wewebapp.io/public/images/no_image_selected.png';
 
             let responce = null;
@@ -456,16 +456,55 @@ export default {
                     fields: [
                         {
                             label: {
-                                en: 'Video URL :',
-                                fr: 'URL de la vidéo :'
+                                en: 'Autoplay :',
+                                fr: 'Lecture automatique :'
                             },
                             desc: {
-                                en: 'the address on top of your browser',
-                                fr: "l'adresse en haut de votre navigateur"
+                                en: 'Video starts automatically',
+                                fr: 'La vidéo se lance automatiquement'
                             },
                             type: 'radio',
-                            key: 'url',
-                            valueData: 'url'
+                            key: 'autoplay',
+                            valueData: 'autoplay'
+                        },
+                        {
+                            label: {
+                                en: 'Controls :',
+                                fr: 'Contrôles :'
+                            },
+                            desc: {
+                                en: 'See player control options',
+                                fr: 'Voir les options de contrôle du lecteur'
+                            },
+                            type: 'radio',
+                            key: 'controls',
+                            valueData: 'controls'
+                        },
+                        {
+                            label: {
+                                en: 'Loop :',
+                                fr: 'Boucle :'
+                            },
+                            desc: {
+                                en: 'The video plays in loop',
+                                fr: 'La vidéo joue en boucle'
+                            },
+                            type: 'radio',
+                            key: 'loop',
+                            valueData: 'loop'
+                        },
+                        {
+                            label: {
+                                en: 'Muted :',
+                                fr: 'Silencieuse :'
+                            },
+                            desc: {
+                                en: 'The video is muted',
+                                fr: 'Le son de la vidéo est coupé'
+                            },
+                            type: 'radio',
+                            key: 'muted',
+                            valueData: 'muted'
                         }
                     ]
                 },
@@ -556,7 +595,8 @@ export default {
             try {
                 const result = await wwLib.wwPopups.open(options);
 
-                console.log(result);
+                console.log('Result 💻 :', result);
+                console.log('Data before 🚀 :', this.wwObject.content.data);
 
                 /*=============================================m_ÔÔ_m=============================================\
                   STYLE
@@ -603,7 +643,7 @@ export default {
                     this.wwObject.content.data.style.minWidth = result.minWidth;
                 }
 
-                console.log('Results 🚀 :', this.wwObject.content.data);
+                console.log('Data after 🔥 :', this.wwObject.content.data);
 
                 this.wwObjectCtrl.update(this.wwObject);
 
