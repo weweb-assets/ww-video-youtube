@@ -1,18 +1,18 @@
 <template>
-    <div class="ww-video" v-bind:class="{ 'ww-video-loaded': true }" :style="style">
+    <div class="ww-video" v-bind:class="{ 'ww-video-loaded': true }" :style="c_style">
         <!-- wwManager:start -->
         <wwOrangeButton class="ww-orange-button" v-if="wwObjectCtrl.getSectionCtrl().getEditMode()"></wwOrangeButton>
         <!-- wwManager:end -->
         <div class="ww-video-container">
             <!-- PREVIEW -->
-            <div v-if="wwAttrs.wwCategory == 'background'" class="ww-video-preview" v-bind:class="{ 'ww-video-loaded': videoLoaded }" v-bind:style="{ 'background-image': 'url(' + wwObject.content.data.preview + ')' }"></div>
+            <div v-if="isBackground" class="ww-video-preview" v-bind:class="{ 'ww-video-loaded': videoLoaded }" v-bind:style="{ 'background-image': 'url(' + wwObject.content.data.preview + ')' }"></div>
 
             <!-- LOCAL -->
-            <video v-if="wwObject.content.data.provider == 'local' && wwAttrs.wwCategory == 'background'" class="ww-video-element ww-local-video ww-video-bg" autoplay="true" loop="true" preload="metadata" playsinline>
+            <!-- <video v-if="wwObject.content.data.provider == 'local' && wwAttrs.wwCategory == 'background'" class="ww-video-element ww-local-video ww-video-bg" autoplay="true" loop="true" preload="metadata" playsinline>
                 <source v-bind:src="wwObject.content.data.id + '#t=0.1'" type="video/mp4" />
-            </video>
+            </video> -->
 
-            <video
+            <!-- <video
                 v-if="wwObject.content.data.provider == 'local' && wwAttrs.wwCategory != 'background'"
                 class="ww-video-element ww-local-video"
                 controlslist="nodownload"
@@ -24,10 +24,10 @@
                 v-bind:controls="wwObject.content.data.controls"
             >
                 <source v-bind:src="wwObject.content.data.id + '#t=0.1'" type="video/mp4" />
-            </video>
+            </video> -->
 
             <!-- YOUTUBE -->
-            <iframe
+            <!-- <iframe
                 v-if="wwObject.content.data.provider == 'youtube' && wwAttrs.wwCategory == 'background'"
                 class="ww-video-element ww-video-bg"
                 v-bind:src="'//www.youtube.com/embed/' + wwObject.content.data.id + '?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1&playlist=' + wwObject.content.data.id"
@@ -35,9 +35,9 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-            ></iframe>
+            ></iframe> -->
 
-            <iframe
+            <!-- <iframe
                 v-if="wwObject.content.data.provider == 'youtube' && wwAttrs.wwCategory != 'background'"
                 class="ww-video-element"
                 v-bind:src="
@@ -54,10 +54,10 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-            ></iframe>
+            ></iframe> -->
 
             <!-- VIMEO -->
-            <iframe
+            <!-- <iframe
                 v-if="wwObject.content.data.provider == 'vimeo' && wwAttrs.wwCategory == 'background'"
                 class="ww-video-element ww-video-bg"
                 v-bind:src="'//player.vimeo.com/video/' + wwObject.content.data.id + '?autoplay=1&loop=1&background=1'"
@@ -65,9 +65,9 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-            ></iframe>
+            ></iframe> -->
 
-            <iframe
+            <!-- <iframe
                 v-if="wwObject.content.data.provider == 'vimeo' && wwAttrs.wwCategory != 'background'"
                 class="ww-video-element"
                 v-bind:src="
@@ -83,10 +83,10 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-            ></iframe>
+            ></iframe> -->
 
             <!-- DAILYMOTION -->
-            <iframe
+            <!-- <iframe
                 v-if="wwObject.content.data.provider == 'dailymotion' && wwAttrs.wwCategory == 'background'"
                 class="ww-video-element ww-video-bg"
                 v-bind:src="'//www.dailymotion.com/embed/video/' + wwObject.content.data.id + '?autoplay=1&mute=1'"
@@ -94,9 +94,9 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-            ></iframe>
+            ></iframe> -->
 
-            <iframe
+            <!-- <iframe
                 v-if="wwObject.content.data.provider == 'dailymotion' && wwAttrs.wwCategory != 'background'"
                 class="ww-video-element"
                 v-bind:src="'//www.dailymotion.com/embed/video/' + wwObject.content.data.id"
@@ -104,10 +104,10 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-            ></iframe>
+            ></iframe> -->
 
             <!-- TWITCH -->
-            <iframe
+            <!-- <iframe
                 v-if="wwObject.content.data.provider == 'twitch' && wwAttrs.wwCategory == 'background'"
                 class="ww-video-element ww-video-bg"
                 v-bind:src="'//player.twitch.tv/?channel=' + wwObject.content.data.id + '?autoplay=1&muted=1'"
@@ -115,9 +115,9 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-            ></iframe>
+            ></iframe> -->
 
-            <iframe
+            <!-- <iframe
                 v-if="wwObject.content.data.provider == 'twitch' && wwAttrs.wwCategory != 'background'"
                 class="ww-video-element"
                 v-bind:src="'//player.twitch.tv/?channel=' + wwObject.content.data.id"
@@ -125,20 +125,38 @@
                 webkitallowfullscreen
                 mozallowfullscreen
                 allowfullscreen
-            ></iframe>
+            ></iframe> -->
 
             <!-- Unknown provide -->
-            <video
+            <!-- https://dirv4gvjcmq3g.cloudfront.net/hero_3.mp4 -->
+            <!-- <video
                 v-if="wwObject.content.data.provider == 'other' && wwAttrs.wwCategory != 'background'"
+                class="ww-video-element"
                 v-bind:src="wwObject.content.data.id"
-                style="width: 100%; height: 100%;"
                 preload="auto"
-                muted=""
                 playsinline=""
                 webkit-playsinline=""
-                autoplay=""
-                loop=""
+                v-bind:muted="wwObject.content.data.muted"
+                v-bind:controls="wwObject.content.data.controls"
+                v-bind:autoplay="wwObject.content.data.autoplay"
+                v-bind:loop="wwObject.content.data.loop"
+            ></video> -->
+
+            <!-- DAM -->
+            <video
+                v-if="isVideo"
+                class="ww-video-element"
+                :class="{ 'ww-video-bg': isBackground }"
+                v-bind:src="c_src"
+                preload="auto"
+                playsinline=""
+                webkit-playsinline=""
+                v-bind:muted="wwObject.content.data.muted"
+                v-bind:controls="wwObject.content.data.controls"
+                v-bind:autoplay="wwObject.content.data.autoplay"
+                v-bind:loop="wwObject.content.data.loop"
             ></video>
+            <iframe v-else class="ww-video-element" :class="{ 'ww-video-bg': isBackground }" v-bind:src="c_src" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
         </div>
     </div>
 </template>
@@ -157,24 +175,51 @@ export default {
     },
     data() {
         return {
-            videoLoaded: false
+            videoLoaded: false,
+            d_el: undefined
         };
     },
     computed: {
+        isVideo() {
+            const provider = this.wwObject.content.data.provider;
+            return provider === 'local' || provider === 'other';
+        },
+        isBackground() {
+            return this.wwAttrs.wwCategory === 'background';
+        },
+        c_src() {
+            const provider = this.wwObject.content.data.provider;
+            let src = this.wwObject.content.data.id;
+            switch (provider) {
+                case 'youtube':
+                    src = `//www.youtube.com/embed/${src}?`;
+                    break;
+                case 'twitch':
+                    src = `//player.twitch.tv/?channel=${src}?`;
+                    break;
+                case 'dailymotion':
+                    src = `//www.dailymotion.com/embed/video/${src}?`;
+                    break;
+                case 'vimeo':
+                    src = `//player.vimeo.com/video/${src}?`;
+                    break;
+                default:
+                    break;
+            }
+            if (!this.isVideo) {
+                if (this.wwObject.content.data.muted) src += 'muted=1&';
+                if (this.wwObject.content.data.controls) src += 'controls=1&';
+                if (this.wwObject.content.data.autoplay) src += 'autoplay=1&';
+                if (this.wwObject.content.data.loop) src += 'loop=1&';
+            }
+            return src;
+        },
         wwObject() {
             return this.wwObjectCtrl.get();
         },
         c_style() {
-            const style = {};
-            if (this.wwAttrs.wwCategory != 'background') {
-                style.paddingBottom = this.getRatio() + '%';
-            }
-            return style;
-        },
-        style() {
-            if (!this.el) {
-                return {};
-            }
+            if (!this.d_el) return {};
+
             this.wwObject.content.data.style = this.wwObject.content.data.style || {};
             let styles = {};
             styles.background = this.wwObject.content.data.backgroundColor || 'transparent';
@@ -197,11 +242,30 @@ export default {
             return styles;
         }
     },
-    watch: {},
     methods: {
         init() {
+            let needUpdate = false;
             //window.addEventListener('resize', this.wwOnResize);
+            if (!this.wwObject.content.data.autoplay) {
+                this.wwObject.content.data.autoplay = this.isBackground;
+                needUpdate = true;
+            }
+            if (!this.wwObject.content.data.controls) {
+                this.wwObject.content.data.controls = !this.isBackground;
+                needUpdate = true;
+            }
+            if (!this.wwObject.content.data.loop) {
+                this.wwObject.content.data.loop = this.isBackground;
+                needUpdate = true;
+            }
+            if (!this.wwObject.content.data.muted) {
+                this.wwObject.content.data.muted = this.isBackground;
+                needUpdate = true;
+            }
 
+            if (needUpdate) {
+                this.wwObjectCtrl.update(this.wwObject);
+            }
             this.wwLoadVideo();
         },
         getRatio() {
@@ -235,7 +299,6 @@ export default {
             }
             return '';
         },
-
         wwAppendPreview() {
             var wwPreviewHTML = "<div class='ww-video-preview' style='background-image:url(" + this.wwObject.content.data.preview + ")'></div>";
 
@@ -371,6 +434,7 @@ export default {
         /*=============================================m_ÔÔ_m=============================================\
           EDIT VIDEO
         \================================================================================================*/
+        /* wwManager:start */
         async edit() {
             wwLib.wwObjectHover.setLock(this);
 
@@ -406,8 +470,8 @@ export default {
                                 fr: "Changer l'apparence du lecteur video"
                             },
                             desc: {
-                                en: 'autoplay, control, loop ...',
-                                fr: 'autoplay, control, loop ...'
+                                en: 'autoplay, controls, loop ...',
+                                fr: 'autoplay, controls, loop ...'
                             },
                             icon: 'wwi wwi-config',
                             shortcut: 'o',
@@ -465,7 +529,7 @@ export default {
                             },
                             type: 'radio',
                             key: 'autoplay',
-                            valueData: 'autoplay'
+                            valueData: 'wwObject.content.data.autoplay'
                         },
                         {
                             label: {
@@ -473,12 +537,12 @@ export default {
                                 fr: 'Contrôles :'
                             },
                             desc: {
-                                en: 'See player control options',
+                                en: 'See player controls options',
                                 fr: 'Voir les options de contrôle du lecteur'
                             },
                             type: 'radio',
                             key: 'controls',
-                            valueData: 'controls'
+                            valueData: 'wwObject.content.data.controls'
                         },
                         {
                             label: {
@@ -491,7 +555,7 @@ export default {
                             },
                             type: 'radio',
                             key: 'loop',
-                            valueData: 'loop'
+                            valueData: 'wwObject.content.data.loop'
                         },
                         {
                             label: {
@@ -504,7 +568,7 @@ export default {
                             },
                             type: 'radio',
                             key: 'muted',
-                            valueData: 'muted'
+                            valueData: 'wwObject.content.data.muted'
                         }
                     ]
                 },
@@ -550,7 +614,6 @@ export default {
                     }
                 }
             });
-
             wwLib.wwPopups.addStory('WWVIDEO_URL', {
                 title: {
                     en: 'EDIT URL',
@@ -585,7 +648,7 @@ export default {
                 }
             });
 
-            let options = {
+            const options = {
                 firstPage: 'WWVIDEO_EDIT',
                 data: {
                     wwObject: this.wwObject
@@ -597,6 +660,25 @@ export default {
 
                 console.log('Result 💻 :', result);
                 console.log('Data before 🚀 :', this.wwObject.content.data);
+
+                /*=============================================m_ÔÔ_m=============================================\
+                  VIDEO PLAYER
+                \================================================================================================*/
+                if (typeof result.autoplay != 'undefined') {
+                    this.wwObject.content.data.autoplay = result.autoplay;
+                }
+
+                if (typeof result.controls != 'undefined') {
+                    this.wwObject.content.data.controls = result.controls;
+                }
+
+                if (typeof result.loop != 'undefined') {
+                    this.wwObject.content.data.loop = result.loop;
+                }
+
+                if (typeof result.muted != 'undefined') {
+                    this.wwObject.content.data.muted = result.muted;
+                }
 
                 /*=============================================m_ÔÔ_m=============================================\
                   STYLE
@@ -649,11 +731,12 @@ export default {
 
                 this.wwObjectCtrl.globalEdit(result);
             } catch (error) {
-                console.log(error);
+                wwLib.wwLog.error(error);
             }
 
             wwLib.wwObjectHover.removeLock();
         }
+        /* wwManager:end */
     },
     mounted() {
         this.init();
@@ -665,6 +748,8 @@ export default {
             noAnim: this.wwAttrs.wwNoAnim,
             noClass: false
         });
+
+        this.d_el = this.$el;
 
         this.$emit('ww-loaded', this);
     },
