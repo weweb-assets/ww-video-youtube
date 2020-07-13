@@ -142,7 +142,6 @@
                 v-bind:loop="wwObject.content.data.loop"
             ></video> -->
 
-            <!-- DAM -->
             <video
                 v-if="isVideo"
                 class="ww-video-element"
@@ -245,7 +244,6 @@ export default {
     methods: {
         init() {
             let needUpdate = false;
-            //window.addEventListener('resize', this.wwOnResize);
             if (!this.wwObject.content.data.autoplay) {
                 this.wwObject.content.data.autoplay = this.isBackground;
                 needUpdate = true;
