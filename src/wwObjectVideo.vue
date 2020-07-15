@@ -62,7 +62,7 @@ export default {
                     else if (!this.isBackground) src = `//www.youtube.com/embed/${src}?rel=0`;
                     break;
                 case 'twitch':
-                    src = `//player.twitch.tv/?channel=${src}?`;
+                    src = `//https://player.twitch.tv/?channel=${src}&parent=streamernews.example.com&muted=true`;
                     break;
                 case 'dailymotion':
                     src = `//www.dailymotion.com/embed/video/${src}?`;
@@ -74,6 +74,9 @@ export default {
                     break;
             }
             if (!this.isVideo) {
+                if (provider === 'twitch') {
+                    return src;
+                }
                 if (provider === 'youtube') {
                     if (this.wwObject.content.data.loop) src += `&loop=1&playlist=${pureSrc}`;
                     if (this.wwObject.content.data.autoplay) src += '&autoplay=1';
@@ -533,8 +536,16 @@ export default {
             try {
                 const result = await wwLib.wwPopups.open(options);
 
-                console.log('Result 💻 :', result);
-                console.log('Data before 🚀 :', this.wwObject.content.data);
+                // console.log('Result 💻 :', result);
+                // console.log('Data before 🚀 :', this.wwObject.content.data);
+
+                if (typeof result.url != 'undefined') {
+                    const info = this.getInfoFromUrl(result.url);
+                    if (info) {
+                        this.wwObject.content.data.id = info.id;
+                        this.wwObject.content.data.provider = info.provider;
+                    }
+                }
 
                 /*=============================================m_ÔÔ_m=============================================\
                   VIDEO PLAYER
@@ -558,13 +569,6 @@ export default {
                 /*=============================================m_ÔÔ_m=============================================\
                   STYLE
                 \================================================================================================*/
-                if (typeof result.url != 'undefined') {
-                    const info = this.getInfoFromUrl(result.url);
-                    if (info) {
-                        this.wwObject.content.data.id = info.id;
-                        this.wwObject.content.data.provider = info.provider;
-                    }
-                }
 
                 if (typeof result.borderColor != 'undefined') {
                     this.wwObject.content.data.style.borderColor = result.borderColor;
@@ -600,7 +604,7 @@ export default {
                     this.wwObject.content.data.style.minWidth = result.minWidth;
                 }
 
-                console.log('Data after 🔥 :', this.wwObject.content.data);
+                //console.log('Data after 🔥 :', this.wwObject.content.data);
 
                 this.wwObjectCtrl.update(this.wwObject);
 
