@@ -7,141 +7,6 @@
             <!-- PREVIEW -->
             <div v-if="isBackground" class="ww-video-preview" v-bind:class="{ 'ww-video-loaded': videoLoaded }" v-bind:style="{ 'background-image': 'url(' + wwObject.content.data.preview + ')' }"></div>
 
-            <!-- LOCAL -->
-            <!-- <video v-if="wwObject.content.data.provider == 'local' && wwAttrs.wwCategory == 'background'" class="ww-video-element ww-local-video ww-video-bg" autoplay="true" loop="true" preload="metadata" playsinline>
-                <source v-bind:src="wwObject.content.data.id + '#t=0.1'" type="video/mp4" />
-            </video> -->
-
-            <!-- <video
-                v-if="wwObject.content.data.provider == 'local' && wwAttrs.wwCategory != 'background'"
-                class="ww-video-element ww-local-video"
-                controlslist="nodownload"
-                preload="metadata"
-                playsinline
-                v-bind:loop="wwObject.content.data.loop"
-                v-bind:autoplay="wwObject.content.data.autoplay"
-                v-bind:muted="wwObject.content.data.muted"
-                v-bind:controls="wwObject.content.data.controls"
-            >
-                <source v-bind:src="wwObject.content.data.id + '#t=0.1'" type="video/mp4" />
-            </video> -->
-
-            <!-- YOUTUBE -->
-            <!-- <iframe
-                v-if="wwObject.content.data.provider == 'youtube' && wwAttrs.wwCategory == 'background'"
-                class="ww-video-element ww-video-bg"
-                v-bind:src="'//www.youtube.com/embed/' + wwObject.content.data.id + '?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1&playlist=' + wwObject.content.data.id"
-                frameborder="0"
-                webkitallowfullscreen
-                mozallowfullscreen
-                allowfullscreen
-            ></iframe> -->
-
-            <!-- <iframe
-                v-if="wwObject.content.data.provider == 'youtube' && wwAttrs.wwCategory != 'background'"
-                class="ww-video-element"
-                v-bind:src="
-                    '//www.youtube.com/embed/' +
-                        wwObject.content.data.id +
-                        '?rel=0' +
-                        (wwObject.content.data.loop ? '&loop=1&playlist=' + wwObject.content.data.id : '') +
-                        (wwObject.content.data.autoplay ? '&autoplay=1' : '') +
-                        (wwObject.content.data.muted ? '' : '') +
-                        (!wwObject.content.data.controls ? '&controls=0' : '') +
-                        (!wwObject.content.data.showinfo ? '&showinfo=0' : '')
-                "
-                frameborder="0"
-                webkitallowfullscreen
-                mozallowfullscreen
-                allowfullscreen
-            ></iframe> -->
-
-            <!-- VIMEO -->
-            <!-- <iframe
-                v-if="wwObject.content.data.provider == 'vimeo' && wwAttrs.wwCategory == 'background'"
-                class="ww-video-element ww-video-bg"
-                v-bind:src="'//player.vimeo.com/video/' + wwObject.content.data.id + '?autoplay=1&loop=1&background=1'"
-                frameborder="0"
-                webkitallowfullscreen
-                mozallowfullscreen
-                allowfullscreen
-            ></iframe> -->
-
-            <!-- <iframe
-                v-if="wwObject.content.data.provider == 'vimeo' && wwAttrs.wwCategory != 'background'"
-                class="ww-video-element"
-                v-bind:src="
-                    '//player.vimeo.com/video/' +
-                        wwObject.content.data.id +
-                        '?a=0' +
-                        (wwObject.content.data.loop ? '&loop=1' : '') +
-                        (wwObject.content.data.autoplay ? '&autoplay=1' : '') +
-                        (wwObject.content.data.muted ? '&mute=1' : '') +
-                        (!wwObject.content.data.controls ? '&controls=0' : '')
-                "
-                frameborder="0"
-                webkitallowfullscreen
-                mozallowfullscreen
-                allowfullscreen
-            ></iframe> -->
-
-            <!-- DAILYMOTION -->
-            <!-- <iframe
-                v-if="wwObject.content.data.provider == 'dailymotion' && wwAttrs.wwCategory == 'background'"
-                class="ww-video-element ww-video-bg"
-                v-bind:src="'//www.dailymotion.com/embed/video/' + wwObject.content.data.id + '?autoplay=1&mute=1'"
-                frameborder="0"
-                webkitallowfullscreen
-                mozallowfullscreen
-                allowfullscreen
-            ></iframe> -->
-
-            <!-- <iframe
-                v-if="wwObject.content.data.provider == 'dailymotion' && wwAttrs.wwCategory != 'background'"
-                class="ww-video-element"
-                v-bind:src="'//www.dailymotion.com/embed/video/' + wwObject.content.data.id"
-                frameborder="0"
-                webkitallowfullscreen
-                mozallowfullscreen
-                allowfullscreen
-            ></iframe> -->
-
-            <!-- TWITCH -->
-            <!-- <iframe
-                v-if="wwObject.content.data.provider == 'twitch' && wwAttrs.wwCategory == 'background'"
-                class="ww-video-element ww-video-bg"
-                v-bind:src="'//player.twitch.tv/?channel=' + wwObject.content.data.id + '?autoplay=1&muted=1'"
-                frameborder="0"
-                webkitallowfullscreen
-                mozallowfullscreen
-                allowfullscreen
-            ></iframe> -->
-
-            <!-- <iframe
-                v-if="wwObject.content.data.provider == 'twitch' && wwAttrs.wwCategory != 'background'"
-                class="ww-video-element"
-                v-bind:src="'//player.twitch.tv/?channel=' + wwObject.content.data.id"
-                frameborder="0"
-                webkitallowfullscreen
-                mozallowfullscreen
-                allowfullscreen
-            ></iframe> -->
-
-            <!-- Unknown provide -->
-            <!-- https://dirv4gvjcmq3g.cloudfront.net/hero_3.mp4 -->
-            <!-- <video
-                v-if="wwObject.content.data.provider == 'other' && wwAttrs.wwCategory != 'background'"
-                class="ww-video-element"
-                v-bind:src="wwObject.content.data.id"
-                preload="auto"
-                playsinline=""
-                webkit-playsinline=""
-                v-bind:muted="wwObject.content.data.muted"
-                v-bind:controls="wwObject.content.data.controls"
-                v-bind:autoplay="wwObject.content.data.autoplay"
-                v-bind:loop="wwObject.content.data.loop"
-            ></video> -->
-
             <video
                 v-if="isVideo"
                 class="ww-video-element"
@@ -155,7 +20,7 @@
                 v-bind:autoplay="wwObject.content.data.autoplay"
                 v-bind:loop="wwObject.content.data.loop"
             ></video>
-            <iframe v-else class="ww-video-element" :class="{ 'ww-video-bg': isBackground }" v-bind:src="c_src" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+            <iframe v-else ref="youtubeIframe" class="ww-video-element" :class="{ 'ww-video-bg': isBackground }" v-bind:src="c_src" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
         </div>
     </div>
 </template>
@@ -188,10 +53,13 @@ export default {
         },
         c_src() {
             const provider = this.wwObject.content.data.provider;
+            let pureSrc = this.wwObject.content.data.id; // save source url for youtube loop parameter
             let src = this.wwObject.content.data.id;
+
             switch (provider) {
                 case 'youtube':
-                    src = `//www.youtube.com/embed/${src}?`;
+                    if (this.isBackground) src = `//www.youtube.com/embed/${src}`;
+                    else if (!this.isBackground) src = `//www.youtube.com/embed/${src}?rel=0`;
                     break;
                 case 'twitch':
                     src = `//player.twitch.tv/?channel=${src}?`;
@@ -206,11 +74,20 @@ export default {
                     break;
             }
             if (!this.isVideo) {
-                if (this.wwObject.content.data.muted) src += 'muted=1&';
-                if (this.wwObject.content.data.controls) src += 'controls=1&';
-                if (this.wwObject.content.data.autoplay) src += 'autoplay=1&';
-                if (this.wwObject.content.data.loop) src += 'loop=1&';
+                if (provider === 'youtube') {
+                    if (this.wwObject.content.data.loop) src += `&loop=1&playlist=${pureSrc}`;
+                    if (this.wwObject.content.data.autoplay) src += '&autoplay=1';
+                    if (this.wwObject.content.data.muted) src += '&mute=1';
+                    if (this.wwObject.content.data.controls) src += '&controls=1';
+                    else if (!this.wwObject.content.data.controls) src += '&controls=0';
+                } else {
+                    if (this.wwObject.content.data.muted) src += '&muted=1';
+                    if (this.wwObject.content.data.controls) src += '&controls=1';
+                    if (this.wwObject.content.data.autoplay) src += '&autoplay=1';
+                    if (this.wwObject.content.data.loop) src += '&loop=1';
+                }
             }
+            console.log(src);
             return src;
         },
         wwObject() {
@@ -558,7 +435,7 @@ export default {
                         {
                             label: {
                                 en: 'Muted :',
-                                fr: 'Silencieuse :'
+                                fr: 'Silencieux :'
                             },
                             desc: {
                                 en: 'The video is muted',
