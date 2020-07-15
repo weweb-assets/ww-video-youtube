@@ -61,9 +61,9 @@ export default {
                     if (this.isBackground) src = `//www.youtube.com/embed/${src}`;
                     else if (!this.isBackground) src = `//www.youtube.com/embed/${src}?rel=0`;
                     break;
-                case 'twitch':
-                    src = `//https://player.twitch.tv/?channel=${src}&parent=streamernews.example.com&muted=true`;
-                    break;
+                // case 'twitch':
+                //     src = `//https://player.twitch.tv/?channel=${src}&parent=streamernews.example.com&muted=true`;
+                //     break;
                 case 'dailymotion':
                     src = `//www.dailymotion.com/embed/video/${src}?`;
                     break;
@@ -298,11 +298,11 @@ export default {
                 info.provider = 'dailymotion';
                 const temp = url.split('video/')[1];
                 info.id = temp.split('?')[0];
-            } else if (url.indexOf('twitch.tv') != -1) {
+            } /*else if (url.indexOf('twitch.tv') != -1) {
                 info.provider = 'twitch';
                 const temp = url.split('tv/')[1];
                 info.id = temp.split('?')[0];
-            } else {
+            }*/ else {
                 info.provider = 'other';
                 info.id = url;
             }
