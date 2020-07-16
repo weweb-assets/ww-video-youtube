@@ -6,7 +6,6 @@
         <div class="ww-video-container">
             <!-- PREVIEW -->
             <div v-if="isBackground" class="ww-video-preview" v-bind:class="{ 'ww-video-loaded': videoLoaded }" v-bind:style="{ 'background-image': 'url(' + wwObject.content.data.preview + ')' }"></div>
-
             <video
                 v-if="isVideo"
                 class="ww-video-element"
@@ -73,6 +72,9 @@ export default {
                 default:
                     break;
             }
+
+            this.wwObject.content.data.url = src.substring(2);
+
             if (!this.isVideo) {
                 if (provider === 'twitch') {
                     return src;
@@ -511,7 +513,7 @@ export default {
                             },
                             type: 'text',
                             key: 'url',
-                            valueData: 'url'
+                            valueData: 'wwObject.content.data.url'
                         }
                     ]
                 },
