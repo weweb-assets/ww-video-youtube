@@ -1,25 +1,25 @@
 <template>
-    <div class="ww-video" v-bind:class="{ 'ww-video-loaded': true }" :style="c_style">
+    <div class="ww-video" :class="{ 'ww-video-loaded': true }" :style="c_style">
         <!-- wwManager:start -->
         <wwOrangeButton class="ww-orange-button" v-if="wwObjectCtrl.getSectionCtrl().getEditMode()"></wwOrangeButton>
         <!-- wwManager:end -->
         <div class="ww-video-container">
             <!-- PREVIEW -->
-            <div v-if="isBackground" class="ww-video-preview" v-bind:class="{ 'ww-video-loaded': videoLoaded }" v-bind:style="{ 'background-image': 'url(' + wwObject.content.data.preview + ')' }"></div>
+            <div v-if="isBackground" class="ww-video-preview" :class="{ 'ww-video-loaded': videoLoaded }" :style="{ 'background-image': 'url(' + wwObject.content.data.preview + ')' }"></div>
             <video
                 v-if="isVideo"
                 class="ww-video-element"
                 :class="{ 'ww-video-bg': isBackground }"
-                v-bind:src="c_src"
+                :src="c_src"
                 preload="none"
                 playsinline=""
                 webkit-playsinline=""
-                v-bind:muted="wwObject.content.data.muted ? true : false"
-                v-bind:controls="wwObject.content.data.controls ? true : false"
-                v-bind:autoplay="wwObject.content.data.autoplay ? true : false"
-                v-bind:loop="wwObject.content.data.loop ? true : false"
+                :muted="wwObject.content.data.muted ? true : false"
+                :controls="wwObject.content.data.controls ? true : false"
+                :autoplay="wwObject.content.data.autoplay ? true : false"
+                :loop="wwObject.content.data.loop ? true : false"
             ></video>
-            <iframe v-else ref="youtubeIframe" class="ww-video-element" :class="{ 'ww-video-bg': isBackground }" v-bind:src="c_src" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+            <iframe v-else ref="youtubeIframe" class="ww-video-element" :class="{ 'ww-video-bg': isBackground }" :src="c_src" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
         </div>
     </div>
 </template>
@@ -126,19 +126,19 @@ export default {
     methods: {
         init() {
             let needUpdate = false;
-            if (!this.wwObject.content.data.autoplay) {
+            if (typeof this.wwObject.content.data.autoplay === 'undefined') {
                 this.wwObject.content.data.autoplay = this.isBackground;
                 needUpdate = true;
             }
-            if (!this.wwObject.content.data.controls) {
+            if (typeof this.wwObject.content.data.controls === 'undefined') {
                 this.wwObject.content.data.controls = !this.isBackground;
                 needUpdate = true;
             }
-            if (!this.wwObject.content.data.loop) {
+            if (typeof this.wwObject.content.data.loop === 'undefined') {
                 this.wwObject.content.data.loop = this.isBackground;
                 needUpdate = true;
             }
-            if (!this.wwObject.content.data.muted) {
+            if (typeof this.wwObject.content.data.muted === 'undefined') {
                 this.wwObject.content.data.muted = this.isBackground;
                 needUpdate = true;
             }
