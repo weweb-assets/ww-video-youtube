@@ -11,13 +11,13 @@
                 class="ww-video-element"
                 :class="{ 'ww-video-bg': isBackground }"
                 v-bind:src="c_src"
-                preload="auto"
+                preload="none"
                 playsinline=""
                 webkit-playsinline=""
-                v-bind:muted="wwObject.content.data.muted"
-                v-bind:controls="wwObject.content.data.controls"
-                v-bind:autoplay="wwObject.content.data.autoplay"
-                v-bind:loop="wwObject.content.data.loop"
+                v-bind:muted="wwObject.content.data.muted ? true : false"
+                v-bind:controls="wwObject.content.data.controls ? true : false"
+                v-bind:autoplay="wwObject.content.data.autoplay ? true : false"
+                v-bind:loop="wwObject.content.data.loop ? true : false"
             ></video>
             <iframe v-else ref="youtubeIframe" class="ww-video-element" :class="{ 'ww-video-bg': isBackground }" v-bind:src="c_src" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
         </div>
