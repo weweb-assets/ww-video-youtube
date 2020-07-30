@@ -8,16 +8,19 @@
             <div v-if="isBackground" class="ww-video-preview" :class="{ 'ww-video-loaded': videoLoaded }" :style="{ 'background-image': 'url(' + wwObject.content.data.preview + ')' }"></div>
             <video
                 v-if="isVideo"
+                v-show="c_src"
                 class="ww-video-element"
                 :class="{ 'ww-video-bg': isBackground }"
-                :src="c_src"
-                playsinline=""
-                webkit-playsinline=""
+                preload="none"
+                playsinline
+                webkit-playsinline
                 :muted="wwObject.content.data.muted ? true : false"
                 :controls="wwObject.content.data.controls ? true : false"
                 :autoplay="wwObject.content.data.autoplay ? true : false"
                 :loop="wwObject.content.data.loop ? true : false"
-            ></video>
+            >
+                <source :src="c_src" type="video/mp4" />
+            </video>
             <iframe v-else ref="youtubeIframe" class="ww-video-element" :class="{ 'ww-video-bg': isBackground }" :src="c_src" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
         </div>
     </div>
