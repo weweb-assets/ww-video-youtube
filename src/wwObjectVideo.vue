@@ -11,7 +11,6 @@
                 class="ww-video-element"
                 :class="{ 'ww-video-bg': isBackground }"
                 :src="c_src"
-                preload="none"
                 playsinline=""
                 webkit-playsinline=""
                 :muted="wwObject.content.data.muted ? true : false"
