@@ -5,10 +5,11 @@
         <!-- wwManager:end -->
         <div class="ww-video-container">
             <!-- PREVIEW -->
+            <!-- <div>{{ c_src && !window.__WW_IS_PRERENDER__ }}</div> -->
             <div v-if="isBackground" class="ww-video-preview" :class="{ 'ww-video-loaded': videoLoaded }" :style="{ 'background-image': 'url(' + wwObject.content.data.preview + ')' }"></div>
             <video
                 v-if="isVideo"
-                v-show="c_src"
+                v-show="showVideo"
                 class="ww-video-element"
                 :class="{ 'ww-video-bg': isBackground }"
                 preload="none"
@@ -48,6 +49,10 @@ export default {
         isVideo() {
             const provider = this.wwObject.content.data.provider;
             return provider === 'local' || provider === 'other';
+        },
+        showVideo() {
+            if (this.c_src && !window.__WW_IS_PRERENDER__) return true;
+            return false;
         },
         isBackground() {
             return this.wwAttrs.wwCategory === 'background';
