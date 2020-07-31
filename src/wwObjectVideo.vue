@@ -146,7 +146,8 @@ export default {
                 needUpdate = true;
             }
             if (typeof this.wwObject.content.data.muted === 'undefined') {
-                this.wwObject.content.data.muted = this.isBackground;
+                //https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
+                this.wwObject.content.data.muted = this.wwObject.content.data.autoplay;
                 needUpdate = true;
             }
 
