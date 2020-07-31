@@ -19,6 +19,7 @@
                 :controls="wwObject.content.data.controls ? true : false"
                 :autoplay="wwObject.content.data.autoplay ? true : false"
                 :loop="wwObject.content.data.loop ? true : false"
+                ref="video"
             >
                 <source :src="c_src" type="video/mp4" />
             </video>
@@ -146,7 +147,8 @@ export default {
                 needUpdate = true;
             }
             if (typeof this.wwObject.content.data.muted === 'undefined') {
-                this.wwObject.content.data.muted = this.isBackground;
+                //https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
+                this.wwObject.content.data.muted = this.wwObject.content.data.autoplay;
                 needUpdate = true;
             }
 
