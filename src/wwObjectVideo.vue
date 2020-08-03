@@ -4,10 +4,9 @@
         <wwOrangeButton class="ww-orange-button" v-if="wwObjectCtrl.getSectionCtrl().getEditMode()"></wwOrangeButton>
         <!-- wwManager:end -->
         <div class="ww-video-container">
-            <!-- PREVIEW -->
-            <!-- <div>{{ c_src && !window.__WW_IS_PRERENDER__ }}</div> -->
-            <div v-if="isBackground" class="ww-video-preview" :class="{ 'ww-video-loaded': videoLoaded }" :style="{ 'background-image': 'url(' + wwObject.content.data.preview + ')' }"></div>
-            <video
+            <iframe v-if="isVideo" class="ww-video-element" :class="{ 'ww-video-bg': isBackground }" :srcdoc="srcdoc" frameborder="0"></iframe>
+
+            <!-- <video
                 v-if="isVideo"
                 v-show="showVideo"
                 class="ww-video-element"
@@ -21,7 +20,7 @@
                 :loop="wwObject.content.data.loop ? true : false"
             >
                 <source :src="c_src" type="video/mp4" />
-            </video>
+            </video> -->
             <iframe v-else ref="youtubeIframe" class="ww-video-element" :class="{ 'ww-video-bg': isBackground }" :src="c_src" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
         </div>
     </div>
@@ -101,6 +100,28 @@ export default {
             }
             console.log(src);
             return src;
+        },
+        srcdoc() {
+            const autoplay = this.wwObject.content.data.autoplay ? true : false;
+            const muted = autoplay ? true : this.wwObject.content.data.muted ? true : false;
+            const controls = this.wwObject.content.data.controls ? true : false;
+            const loop = this.wwObject.content.data.loop ? true : false;
+
+            return `<html style='height:100%'><body style='padding:0;margin:0;overflow: hidden;height:100%;'>
+                        <video 
+                            style='width:100%;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);' 
+                            preload='none' 
+                            playsinline 
+                            webkit-playsinline 
+                            ${autoplay ? `autoplay` : ''} 
+                            ${loop ? `loop` : ''} 
+                            ${muted ? `muted` : ''} 
+                            ${controls ? `controls` : ''} >
+                                <source 
+                                    src='${this.c_src}' 
+                                    type='video/mp4'>
+                        </video>
+                    </body>`;
         },
         wwObject() {
             return this.wwObjectCtrl.get();
