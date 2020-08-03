@@ -4,7 +4,7 @@
         <wwOrangeButton class="ww-orange-button" v-if="wwObjectCtrl.getSectionCtrl().getEditMode()"></wwOrangeButton>
         <!-- wwManager:end -->
         <div class="ww-video-container">
-            <iframe v-if="isVideo" class="ww-video-element" :class="{ 'ww-video-bg': isBackground }" :srcdoc="srcdoc" frameborder="0"></iframe>
+            <iframe v-if="isVideo" class="ww-video-element" :class="{ 'ww-video-bg': isBackground }" :srcdoc="srcdoc" frameborder="0" loading="lazy"></iframe>
 
             <!-- <video
                 v-if="isVideo"
@@ -21,7 +21,7 @@
             >
                 <source :src="c_src" type="video/mp4" />
             </video> -->
-            <iframe v-else ref="youtubeIframe" class="ww-video-element" :class="{ 'ww-video-bg': isBackground }" :src="c_src" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+            <iframe v-else ref="youtubeIframe" class="ww-video-element" :class="{ 'ww-video-bg': isBackground }" :src="c_src" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen loading="lazy"></iframe>
         </div>
     </div>
 </template>
