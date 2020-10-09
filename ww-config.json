@@ -1,42 +1,16 @@
 {
-    "componentPath": "./src/wwObjectVideo.vue",
-    "content": {
-        "type": "ww-video",
-        "data": {
-            "provider": "youtube",
-            "id": "o_Lj93pjK1U",
-            "loop": false,
-            "controls": true,
-            "muted": false,
-            "autoplay": false,
-            "showinfo": true,
-            "preview": "",
-            "alt": {
-                "fr": "Une vidéo"
-            }
-        }
-    },
-    "upsales": {
-        "wwAnalytics": {
-            "click": false
-        }
-    },
-    "cmsOptions": {
-        "wwObjectHover": {
-            "hoverClass": true,
-            "pluses": false
+    "componentPath": "./src/wwObject.vue",
+    "editor": {
+        "label": {
+            "fr": "Vidéo",
+            "en": "Video"
         },
-        "wwObjectMenu": {
+        "editElementMenu": {
             "items": [
                 {
-                    "name": "OPTIONS",
-                    "text": {
-                        "en": "Options",
-                        "fr": "Options"
-                    },
-                    "main": true,
-                    "icon": "wwi wwi-edit-other",
-                    "action": "edit"
+                    "label": { "en": "Options", "fr": "Options" },
+                    "icon": "config",
+                    "action": "setOptions"
                 }
             ]
         }
