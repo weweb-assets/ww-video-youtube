@@ -2,9 +2,22 @@
     <div class="ww-video" :style="style">
         <div class="ww-video-container">
             <iframe
+                v-if="isVideo"
                 class="ww-video-element"
-                :class="{ 'ww-video-bg': isBackground, 'ww-editing': isEditing }"
-                :src="isVideo ? src : undefined"
+                :class="{ 'ww-editing': isEditing }"
+                :srcdoc="srcdoc"
+                frameborder="0"
+                webkitallowfullscreen
+                mozallowfullscreen
+                allowfullscreen
+                scrolling="no"
+                loading="lazy"
+            ></iframe>
+            <iframe
+                v-else
+                class="ww-video-element"
+                :class="{ 'ww-editing': isEditing }"
+                :src="src"
                 frameborder="0"
                 webkitallowfullscreen
                 mozallowfullscreen
@@ -17,10 +30,6 @@
 </template>
 
 <script>
-/* wwEditor:start */
-import openPopup from './popups';
-/* wwEditor:end */
-
 export default {
     name: '__COMPONENT_NAME__',
     props: {
@@ -31,9 +40,7 @@ export default {
         /* wwEditor:end */
     },
     wwDefaultContent: {
-        id: '76CMCIW-wGk',
         url: 'https://youtu.be/76CMCIW-wGk',
-        provider: 'youtube',
         autoplay: false,
         controls: true,
         loop: false,
@@ -41,90 +48,119 @@ export default {
         ratio: 33.33,
     },
     computed: {
-        style() {
-            return {
-                paddingBottom: this.isBackground ? '' : (Math.max(0, this.content.ratio) || 66.66) + '%',
-            };
-        },
         isEditing() {
             return this.wwEditorState.editMode === wwLib.wwSectionHelper.EDIT_MODES.CONTENT;
         },
         isVideo() {
-            return this.content.provider === 'other' || this.content.provider === 'local';
+            return this.provider === 'other' || this.provider === 'local';
+        },
+        provider() {
+            return this.getInfoFromUrl(this.content.url).provider;
+        },
+        videoId() {
+            return this.getInfoFromUrl(this.content.url).id;
         },
         src() {
-            const provider = this.content.provider;
-            let src = this.content.id;
-            switch (provider) {
+            if (!this.content.url) return;
+
+            let src = this.content.url;
+            const id = this.videoId;
+
+            if (this.provider === 'other' || this.provider === 'local') return;
+
+            switch (this.provider) {
                 case 'youtube':
-                    if (this.isBackground) src = `//www.youtube.com/embed/${src}`;
-                    else if (!this.isBackground) src = `//www.youtube.com/embed/${src}?rel=0`;
+                    src = `//www.youtube.com/embed/${id}?rel=0`;
                     break;
                 case 'twitch':
-                    src = `//player.twitch.tv/?video=${src}&parent=${window.location.hostname}`;
+                    src = `//player.twitch.tv/?video=${id}&parent=${window.location.hostname}`;
                     break;
                 case 'dailymotion':
-                    src = `//www.dailymotion.com/embed/video/${src}?`;
+                    src = `//www.dailymotion.com/embed/video/${id}?`;
                     break;
                 case 'vimeo':
-                    src = `//player.vimeo.com/video/${src}?`;
+                    src = `//player.vimeo.com/video/${id}?`;
                     break;
                 default:
                     break;
             }
 
-            if (!this.isVideo) {
-                if (provider === 'youtube') {
-                    if (this.content.loop) src += `&loop=1&playlist=${this.content.id}`;
-                    if (this.content.autoplay) src += '&autoplay=1';
-                    if (this.content.muted) src += '&mute=1';
-                    if (this.content.controls) src += '&controls=1';
-                    else src += '&controls=0';
-                } else if (provider === 'twitch') {
-                    src += `&autoplay=${this.content.autoplay}`;
-                    src += `&mute=${this.content.muted}`;
-                } else {
-                    if (this.content.muted) src += '&muted=1';
-                    if (this.content.controls) src += '&controls=1';
-                    if (this.content.autoplay) src += '&autoplay=1';
-                    if (this.content.loop) src += '&loop=1';
-                }
+            if (this.provider === 'youtube') {
+                if (this.content.loop) src += `&loop=1&playlist=${id}`;
+                if (this.content.autoplay) src += '&autoplay=1';
+                if (this.content.muted) src += '&mute=1';
+                if (!this.content.controls) src += '&controls=0';
+            } else if (this.provider === 'twitch') {
+                src += `&autoplay=${this.content.autoplay}`;
+                src += `&mute=${this.content.muted}`;
+            } else {
+                if (this.content.muted) src += '&muted=1';
+                if (!this.content.controls) src += '&controls=0';
+                if (this.content.autoplay) src += '&autoplay=1';
+                if (this.content.loop) src += '&loop=1';
             }
+
+            console.log(src);
 
             return src;
         },
         srcdoc() {
-            const autoplay = this.content.autoplay ? true : false;
-            const muted = autoplay ? true : this.content.muted ? true : false;
-            const controls = this.content.controls ? true : false;
-            const loop = this.content.loop ? true : false;
-
-            return `
-                <html style="height:100%">
-                    <body style="padding: 0; margin: 0; overflow: hidden; height: 100%;">
-                        <video
-                            style="width: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"
-                            preload="none"
-                            playsinline
-                            webkit-playsinline
-                            autoplay=${autoplay}
-                            loop=${loop}
-                            muted=${muted}
-                            controls=${controls}>
-                                <source src="${this.src}" >
-                        </video>
-                    </body>
-                </html>`;
+            return `<html style='height:100%'>
+                        <body style='padding:0;margin:0;overflow: hidden;height:100%;'>
+                                <video
+                                    style='width:100%;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);'
+                                    preload='none'
+                                    playsinline
+                                    webkit-playsinline
+                                    ${this.content.autoplay ? `autoplay` : ''}
+                                    ${this.content.loop ? `loop` : ''}
+                                    ${this.content.muted ? `muted` : ''}
+                                    ${this.content.controls ? `controls` : ''}
+                                    >
+                                    <source src='${this.content.url}' type='video/mp4' />
+                                </video>
+                         </body>
+                    </html>
+                `;
         },
     },
-    /* wwEditor:start */
     methods: {
-        async setOptions() {
-            const result = await openPopup(this.content);
-            if (result) this.$emit('update', result);
+        getInfoFromUrl(url) {
+            if (!this.content.url) return {};
+
+            if (url.indexOf('youtube.com') !== -1) {
+                return {
+                    id: url.split('v=')[1].split('?')[0],
+                    provider: 'youtube',
+                };
+            } else if (url.indexOf('youtu.be') !== -1) {
+                return {
+                    id: url.split('be/')[1].split('?')[0],
+                    provider: 'youtube',
+                };
+            } else if (url.indexOf('vimeo.com') !== -1) {
+                return {
+                    id: url.split('m/')[1].split('?')[0],
+                    provider: 'vimeo',
+                };
+            } else if (url.indexOf('dailymotion.com') !== -1) {
+                return {
+                    id: url.split('video/')[1].split('?')[0],
+                    provider: 'dailymotion',
+                };
+            } else if (url.indexOf('twitch.tv') !== -1) {
+                return {
+                    id: url.split('tv/videos/')[1].split('?')[0],
+                    provider: 'twitch',
+                };
+            } else {
+                return {
+                    id: url,
+                    provider: 'other',
+                };
+            }
         },
     },
-    /* wwEditor:end */
 };
 </script>
 
@@ -139,16 +175,7 @@ export default {
         height: 100%;
         top: 0;
         left: 0;
-        .ww-video-bg {
-            display: none;
-            pointer-events: none;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            @media (min-width: 769px) {
-                display: block !important;
-            }
-        }
+
         .ww-video-element {
             position: relative;
             width: 100%;
