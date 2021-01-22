@@ -49,6 +49,7 @@ export default {
     },
     computed: {
         isEditing() {
+            if (!this.wwEditorState || !this.wwEditorState.editMode) return false;
             return this.wwEditorState.editMode === wwLib.wwSectionHelper.EDIT_MODES.CONTENT;
         },
         isVideo() {
@@ -99,9 +100,6 @@ export default {
                 if (this.content.autoplay) src += '&autoplay=1';
                 if (this.content.loop) src += '&loop=1';
             }
-
-            console.log(src);
-
             return src;
         },
         srcdoc() {
@@ -112,10 +110,10 @@ export default {
                                     preload='none'
                                     playsinline
                                     webkit-playsinline
-                                    ${this.content.autoplay ? `autoplay` : ''}
-                                    ${this.content.loop ? `loop` : ''}
-                                    ${this.content.muted ? `muted` : ''}
-                                    ${this.content.controls ? `controls` : ''}
+                                    ${this.content.autoplay ? 'autoplay' : ''}
+                                    ${this.content.loop ? 'loop' : ''}
+                                    ${this.content.muted ? 'muted' : ''}
+                                    ${this.content.controls ? 'controls' : ''}
                                     >
                                     <source src='${this.content.url}' type='video/mp4' />
                                 </video>
