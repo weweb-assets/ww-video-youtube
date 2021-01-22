@@ -1,5 +1,5 @@
 <template>
-    <div class="ww-video" :style="style">
+    <div class="ww-video">
         <div class="ww-video-container">
             <iframe
                 v-if="isVideo"
@@ -30,46 +30,53 @@
 </template>
 
 <script>
+import { getSettingsConfigurations } from './configuration';
+
 export default {
     name: '__COMPONENT_NAME__',
     props: {
         content: Object,
-        isBackground: Boolean,
         /* wwEditor:start */
         wwEditorState: Object,
         /* wwEditor:end */
     },
     wwDefaultContent: {
         url: 'https://youtu.be/76CMCIW-wGk',
+        provider: 'youtube',
         autoplay: false,
         controls: true,
         loop: false,
         muted: false,
         ratio: 33.33,
+        previewImage: '',
     },
+
+    /* wwEditor:start */
+    wwEditorConfiguration({ content }) {
+        return getSettingsConfigurations(content);
+    },
+    /* wwEditor:end */
     computed: {
         isEditing() {
-            if (!this.wwEditorState || !this.wwEditorState.editMode) return false;
+            /* wwEditor:start */
             return this.wwEditorState.editMode === wwLib.wwSectionHelper.EDIT_MODES.CONTENT;
+            /* wwEditor:end */
+            // eslint-disable-next-line no-unreachable
+            return false;
         },
         isVideo() {
-            return this.provider === 'other' || this.provider === 'local';
-        },
-        provider() {
-            return this.getInfoFromUrl(this.content.url).provider;
-        },
-        videoId() {
-            return this.getInfoFromUrl(this.content.url).id;
+            return this.content.provider === 'other' || this.content.provider === 'local';
         },
         src() {
             if (!this.content.url) return;
-
             let src = this.content.url;
-            const id = this.videoId;
-
-            if (this.provider === 'other' || this.provider === 'local') return;
-
-            switch (this.provider) {
+            const provider = this.getInfoFromUrl(src).provider;
+            this.$emit('update', {
+                provider: provider,
+            });
+            const id = this.getInfoFromUrl(src).id;
+            if (provider === 'other' || provider === 'local') return;
+            switch (provider) {
                 case 'youtube':
                     src = `//www.youtube.com/embed/${id}?rel=0`;
                     break;
@@ -85,13 +92,12 @@ export default {
                 default:
                     break;
             }
-
-            if (this.provider === 'youtube') {
+            if (provider === 'youtube') {
                 if (this.content.loop) src += `&loop=1&playlist=${id}`;
                 if (this.content.autoplay) src += '&autoplay=1';
                 if (this.content.muted) src += '&mute=1';
                 if (!this.content.controls) src += '&controls=0';
-            } else if (this.provider === 'twitch') {
+            } else if (provider === 'twitch') {
                 src += `&autoplay=${this.content.autoplay}`;
                 src += `&mute=${this.content.muted}`;
             } else {
@@ -103,6 +109,8 @@ export default {
             return src;
         },
         srcdoc() {
+            const previewUrl = `${wwLib.wwUtils.getCdnPrefix()}${this.content.previewImage}`;
+
             return `<html style='height:100%'>
                         <body style='padding:0;margin:0;overflow: hidden;height:100%;'>
                                 <video
@@ -110,6 +118,7 @@ export default {
                                     preload='none'
                                     playsinline
                                     webkit-playsinline
+                                    ${this.content.previewImage ? 'poster=' + previewUrl : ''}
                                     ${this.content.autoplay ? 'autoplay' : ''}
                                     ${this.content.loop ? 'loop' : ''}
                                     ${this.content.muted ? 'muted' : ''}
@@ -125,7 +134,6 @@ export default {
     methods: {
         getInfoFromUrl(url) {
             if (!this.content.url) return {};
-
             if (url.indexOf('youtube.com') !== -1) {
                 return {
                     id: url.split('v=')[1].split('?')[0],
