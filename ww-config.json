@@ -1,5 +1,8 @@
 {
     "componentPath": "./src/wwObject.vue",
+    "options": {
+        "sizable": true
+    },
     "editor": {
         "label": {
             "fr": "Vidéo",
