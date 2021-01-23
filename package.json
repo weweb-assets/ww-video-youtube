@@ -3,7 +3,7 @@
     "repository": {
         "url": "https://github.com/weweb-assets/ww-video"
     },
-    "version": "2.0.2",
+    "version": "1.0.0",
     "scripts": {
         "build": "weweb build",
         "serve": "weweb serve"
