@@ -47,7 +47,6 @@ export default {
         controls: true,
         loop: false,
         muted: false,
-        ratio: 33.33,
         previewImage: '',
     },
 
@@ -56,6 +55,15 @@ export default {
         return getSettingsConfigurations(content);
     },
     /* wwEditor:end */
+    watch: {
+        'content.url'() {
+            if (!this.content.url) return;
+            const provider = this.getInfoFromUrl(this.content.url).provider;
+            this.$emit('update', {
+                provider: provider,
+            });
+        },
+    },
     computed: {
         isEditing() {
             /* wwEditor:start */
@@ -71,9 +79,7 @@ export default {
             if (!this.content.url) return;
             let src = this.content.url;
             const provider = this.getInfoFromUrl(src).provider;
-            this.$emit('update', {
-                provider: provider,
-            });
+
             const id = this.getInfoFromUrl(src).id;
             if (provider === 'other' || provider === 'local') return;
             switch (provider) {
@@ -106,6 +112,7 @@ export default {
                 if (this.content.autoplay) src += '&autoplay=1';
                 if (this.content.loop) src += '&loop=1';
             }
+
             return src;
         },
         srcdoc() {
