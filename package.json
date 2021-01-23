@@ -1,27 +1,24 @@
 {
     "name": "ww-video",
-    "type": "wwObject",
-    "wewebPublic": "true",
     "repository": {
-        "type": "git",
-        "url": "https://github.com/WeWeb-Public/ww-video"
+        "url": "https://github.com/weweb-assets/ww-video"
     },
-    "version": "0.0.3",
-    "private": true,
+    "version": "2.0.2",
     "scripts": {
-        "build": "weweb-build",
-        "serve": "weweb-serve",
-        "create-config": "weweb-config"
+        "build": "weweb build",
+        "serve": "weweb serve"
     },
     "dependencies": {
-        "vue": "^2.6.11"
+        "vue": "2.6.12"
     },
     "devDependencies": {
-        "weweb-client": "latest"
+        "@vue/eslint-config-prettier": "^6.0.0",
+        "@weweb/cli": "latest",
+        "babel-eslint": "^10.1.0",
+        "eslint": "^7.10.0",
+        "eslint-plugin-prettier": "^3.1.4",
+        "eslint-plugin-vue": "^6.2.2",
+        "prettier": "^2.1.2"
     },
-    "browserslist": [
-        "> 1%",
-        "last 2 versions",
-        "not ie <= 8"
-    ]
+    "license": "MIT"
 }
