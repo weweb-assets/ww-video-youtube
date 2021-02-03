@@ -53,6 +53,7 @@ export default {
     data() {
         return {
             iframeVideoPlayed: false,
+            isEventListener: false,
         };
     },
     /* wwEditor:start */
@@ -63,6 +64,15 @@ export default {
     watch: {
         'content.url'() {
             if (!this.content.url) return;
+
+            setTimeout(() => {
+                if (this.videoElement && this.videoElement.contentWindow && this.videoElement.contentWindow.document) {
+                    this.videoElement.contentWindow.document
+                        .querySelector('.video')
+                        .addEventListener('click', this.handlePreviewClick);
+                }
+            }, 500);
+
             const provider = this.getInfoFromUrl(this.content.url).provider;
             this.$emit('update', {
                 provider: provider,
@@ -70,7 +80,7 @@ export default {
         },
     },
     computed: {
-        videoIframeElement() {
+        videoElement() {
             return this.isVideo ? this.$refs.video : null;
         },
         isEditing() {
@@ -183,16 +193,14 @@ export default {
             }
         },
         handlePreviewClick() {
-            if (
-                this.videoIframeElement &&
-                this.videoIframeElement.contentWindow &&
-                this.videoIframeElement.contentWindow.document
-            ) {
+            this.isEventListener = true;
+
+            if (this.videoElement && this.videoElement.contentWindow && this.videoElement.contentWindow.document) {
                 if (!this.iframeVideoPlayed) {
-                    this.videoIframeElement.contentWindow.document.querySelector('.video').play();
+                    this.videoElement.contentWindow.document.querySelector('.video').play();
                     this.iframeVideoPlayed = true;
                 } else {
-                    this.videoIframeElement.contentWindow.document.querySelector('.video').pause();
+                    this.videoElement.contentWindow.document.querySelector('.video').pause();
                     this.iframeVideoPlayed = false;
                 }
             }
@@ -200,12 +208,22 @@ export default {
         },
     },
     mounted() {
-        const wwVideo = document.querySelector('.ww-video-container');
-        wwVideo.addEventListener('click', this.handlePreviewClick);
+        setTimeout(() => {
+            if (this.videoElement && this.videoElement.contentWindow && this.videoElement.contentWindow.document) {
+                this.videoElement.contentWindow.document
+                    .querySelector('.video')
+                    .addEventListener('click', this.handlePreviewClick);
+            }
+        }, 1000);
     },
     beforeDestroy() {
-        const wwVideo = document.querySelector('.ww-video-container');
-        wwVideo.removeEventListener('click', this.handlePreviewClick);
+        if (this.isEventListener) {
+            if (this.videoElement && this.videoElement.contentWindow && this.videoElement.contentWindow.document) {
+                this.videoElement.contentWindow.document
+                    .querySelector('.video')
+                    .removeEventListener('click', this.handlePreviewClick);
+            }
+        }
     },
 };
 </script>
