@@ -2,6 +2,7 @@
     <div class="ww-video">
         <div class="ww-video-container">
             <iframe
+                ref="video"
                 v-if="isVideo"
                 class="ww-video-element"
                 :class="{ 'ww-editing': isEditing }"
@@ -49,7 +50,6 @@ export default {
         muted: false,
         previewImage: '',
     },
-
     /* wwEditor:start */
     wwEditorConfiguration({ content }) {
         return getSettingsConfigurations(content);
@@ -65,6 +65,9 @@ export default {
         },
     },
     computed: {
+        videoIframeElement() {
+            return this.isVideo ? this.$refs.video : null;
+        },
         isEditing() {
             /* wwEditor:start */
             return this.wwEditorState.editMode === wwLib.wwSectionHelper.EDIT_MODES.CONTENT;
@@ -121,6 +124,7 @@ export default {
             return `<html style='height:100%'>
                         <body style='padding:0;margin:0;overflow: hidden;height:100%;'>
                                 <video
+                                    class='video'
                                     style='width:100%;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);'
                                     preload='none'
                                     playsinline
@@ -173,6 +177,24 @@ export default {
                 };
             }
         },
+        handlePreviewClick() {
+            if (
+                this.videoIframeElement &&
+                this.videoIframeElement.contentWindow &&
+                this.videoIframeElement.contentWindow.document
+            ) {
+                this.videoIframeElement.contentWindow.document.querySelector('.video').play();
+            }
+            return;
+        },
+    },
+    mounted() {
+        const wwVideo = document.querySelector('.ww-video-container');
+        wwVideo.addEventListener('click', this.handlePreviewClick);
+    },
+    beforeDestroy() {
+        const wwVideo = document.querySelector('.ww-video-container');
+        wwVideo.removeEventListener('click', this.handlePreviewClick);
     },
 };
 </script>
