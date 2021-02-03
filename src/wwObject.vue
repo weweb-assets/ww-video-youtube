@@ -50,6 +50,11 @@ export default {
         muted: false,
         previewImage: '',
     },
+    data() {
+        return {
+            iframeVideoPlayed: false,
+        };
+    },
     /* wwEditor:start */
     wwEditorConfiguration({ content }) {
         return getSettingsConfigurations(content);
@@ -183,7 +188,13 @@ export default {
                 this.videoIframeElement.contentWindow &&
                 this.videoIframeElement.contentWindow.document
             ) {
-                this.videoIframeElement.contentWindow.document.querySelector('.video').play();
+                if (!this.iframeVideoPlayed) {
+                    this.videoIframeElement.contentWindow.document.querySelector('.video').play();
+                    this.iframeVideoPlayed = true;
+                } else {
+                    this.videoIframeElement.contentWindow.document.querySelector('.video').pause();
+                    this.iframeVideoPlayed = false;
+                }
             }
             return;
         },
