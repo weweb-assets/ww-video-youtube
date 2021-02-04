@@ -1,19 +1,17 @@
 <template>
     <div class="ww-video">
         <div class="ww-video-container">
-            <iframe
-                ref="video"
+            <video
                 v-if="isVideo"
                 class="ww-video-element"
-                :class="{ 'ww-editing': isEditing }"
-                :srcdoc="srcdoc"
-                frameborder="0"
-                webkitallowfullscreen
-                mozallowfullscreen
-                allowfullscreen
-                scrolling="no"
-                loading="lazy"
-            ></iframe>
+                ref="videoPlayer"
+                preload="none"
+                playsinline
+                webkit-playsinline
+            >
+                <source :src="content.url" type="video/mp4" />
+                Sorry, your browser doesn't support embedded videos.
+            </video>
             <iframe
                 v-else
                 class="ww-video-element"
@@ -52,7 +50,8 @@ export default {
     },
     data() {
         return {
-            iframeVideoPlayed: false,
+            isVideoPlayed: false,
+            isEventListener: false,
         };
     },
     /* wwEditor:start */
@@ -61,16 +60,35 @@ export default {
     },
     /* wwEditor:end */
     watch: {
+        content() {
+            this.handleVideoEvent();
+        },
         'content.url'() {
             if (!this.content.url) return;
+
             const provider = this.getInfoFromUrl(this.content.url).provider;
             this.$emit('update', {
                 provider: provider,
             });
         },
+        'content.autoplay'() {
+            this.handleVideoEvent();
+        },
+        'content.controls'() {
+            this.handleVideoEvent();
+        },
+        'content.loop'() {
+            this.handleVideoEvent();
+        },
+        'content.muted'() {
+            this.handleVideoEvent();
+        },
+        'content.previewImage'() {
+            this.handleVideoEvent();
+        },
     },
     computed: {
-        videoIframeElement() {
+        videoElement() {
             return this.isVideo ? this.$refs.video : null;
         },
         isEditing() {
@@ -123,29 +141,6 @@ export default {
 
             return src;
         },
-        srcdoc() {
-            const previewUrl = `${wwLib.wwUtils.getCdnPrefix()}${this.content.previewImage}`;
-
-            return `<html style='height:100%'>
-                        <body style='padding:0;margin:0;overflow: hidden;height:100%;'>
-                                <video
-                                    class='video'
-                                    style='width:100%;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);'
-                                    preload='none'
-                                    playsinline
-                                    webkit-playsinline
-                                    ${this.content.previewImage ? 'poster=' + previewUrl : ''}
-                                    ${this.content.autoplay ? 'autoplay' : ''}
-                                    ${this.content.loop ? 'loop' : ''}
-                                    ${this.content.muted ? 'muted' : ''}
-                                    ${this.content.controls ? 'controls' : ''}
-                                    >
-                                    <source src='${this.content.url}' type='video/mp4' />
-                                </video>
-                         </body>
-                    </html>
-                `;
-        },
     },
     methods: {
         getInfoFromUrl(url) {
@@ -182,30 +177,96 @@ export default {
                 };
             }
         },
-        handlePreviewClick() {
-            if (
-                this.videoIframeElement &&
-                this.videoIframeElement.contentWindow &&
-                this.videoIframeElement.contentWindow.document
-            ) {
-                if (!this.iframeVideoPlayed) {
-                    this.videoIframeElement.contentWindow.document.querySelector('.video').play();
-                    this.iframeVideoPlayed = true;
-                } else {
-                    this.videoIframeElement.contentWindow.document.querySelector('.video').pause();
-                    this.iframeVideoPlayed = false;
-                }
+        handleLocalVideoOptions() {
+            if (!this.isVideo) return;
+
+            const { controls, loop, autoplay, muted, previewImage } = this.content;
+            const video = this.$refs.videoPlayer;
+
+            if (!video) {
+                return;
             }
-            return;
+
+            if (controls) {
+                video.setAttribute('controls', '');
+            } else {
+                video.removeAttribute('controls');
+            }
+
+            if (loop) {
+                video.setAttribute('loop', '');
+            } else {
+                video.removeAttribute('loop');
+            }
+
+            if (autoplay) {
+                video.setAttribute('autoplay', '');
+                video.play();
+                this.isVideoPlayed = true;
+            } else {
+                video.removeAttribute('autoplay');
+                video.pause();
+                this.isVideoPlayed = false;
+            }
+
+            if (muted) {
+                video.setAttribute('muted', '');
+            } else {
+                video.removeAttribute('muted');
+            }
+
+            if (previewImage && previewImage.length && previewImage.length > 1) {
+                video.setAttribute('poster', `${wwLib.wwUtils.getCdnPrefix()}${this.content.previewImage}`);
+            } else {
+                video.removeAttribute('poster');
+            }
+        },
+        handleVideoClick() {
+            if (!this.isVideo) return;
+
+            const video = this.$refs.videoPlayer;
+
+            if (!this.isVideoPlayed) {
+                video.play();
+                this.isVideoPlayed = true;
+            } else {
+                video.pause();
+                this.isVideoPlayed = false;
+            }
+        },
+        handleVideoEvent() {
+            const videoEl = document.querySelector('.ww-video-element');
+
+            if (this.isEventListener) {
+                videoEl.removeEventListener('click', this.handleVideoClick);
+                this.isEventListener = false;
+            }
+
+            videoEl.addEventListener('click', this.handleVideoClick);
+            this.isEventListener = true;
+
+            this.$nextTick(() => {
+                this.handleLocalVideoOptions();
+            });
         },
     },
     mounted() {
-        const wwVideo = document.querySelector('.ww-video-container');
-        wwVideo.addEventListener('click', this.handlePreviewClick);
+        if (this.isVideo) {
+            this.handleLocalVideoOptions;
+        }
+
+        this.$nextTick(() => {
+            const videoEl = document.querySelector('.ww-video-element');
+            videoEl.addEventListener('click', this.handleVideoClick);
+            this.isEventListener = true;
+        });
     },
     beforeDestroy() {
-        const wwVideo = document.querySelector('.ww-video-container');
-        wwVideo.removeEventListener('click', this.handlePreviewClick);
+        if (this.isEventListener) {
+            const videoEl = document.querySelector('.ww-video-element');
+            videoEl.removeEventListener('click', this.handleVideoClick);
+            this.isEventListener = false;
+        }
     },
 };
 </script>
