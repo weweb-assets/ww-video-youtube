@@ -6,6 +6,7 @@ const COMMON_VIDEO_OPTIONS = {
         options: {
             placeholder: 'Url',
         },
+        bindable: true,
     },
     autoplay: {
         label: { en: 'Autoplay', fr: 'Lecture automatique' },
