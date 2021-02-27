@@ -1,13 +1,4 @@
 const COMMON_VIDEO_OPTIONS = {
-    url: {
-        path: 'url',
-        label: { en: 'Video url', fr: 'Url de la vidéo' },
-        type: 'Text',
-        options: {
-            placeholder: 'Url',
-        },
-        bindable: true,
-    },
     autoplay: {
         label: { en: 'Autoplay', fr: 'Lecture automatique' },
         type: 'TextRadioGroup',

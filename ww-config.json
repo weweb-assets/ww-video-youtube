@@ -7,6 +7,17 @@
         "label": {
             "fr": "Vidéo",
             "en": "Vidéo"
+        },
+        "settingsOptions": {
+            "url": {
+                "path": "url",
+                "label": { "en": "Video url", "fr": "Url de la vidéo" },
+                "type": "Text",
+                "options": {
+                    "placeholder": "Url"
+                },
+                "bindable": true
+            }
         }
     }
 }
