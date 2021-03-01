@@ -18,18 +18,18 @@ const COMMON_VIDEO_OPTIONS = {
             ],
         },
     },
-    controls: {
-        label: { en: 'Controls', fr: 'Contrôles' },
+    muted: {
+        label: { en: 'Muted', fr: 'Muet' },
         type: 'TextRadioGroup',
         options: {
             choices: [
                 {
+                    default: true,
                     value: false,
                     title: { en: 'Start', fr: 'Début' },
                     icon: 'none',
                 },
                 {
-                    default: true,
                     value: true,
                     title: { en: 'Center', fr: 'Milieu' },
                     icon: 'tick',
@@ -56,18 +56,18 @@ const COMMON_VIDEO_OPTIONS = {
             ],
         },
     },
-    muted: {
-        label: { en: 'Muted', fr: 'Muet' },
+    controls: {
+        label: { en: 'Controls', fr: 'Contrôles' },
         type: 'TextRadioGroup',
         options: {
             choices: [
                 {
-                    default: true,
                     value: false,
                     title: { en: 'Start', fr: 'Début' },
                     icon: 'none',
                 },
                 {
+                    default: true,
                     value: true,
                     title: { en: 'Center', fr: 'Milieu' },
                     icon: 'tick',
@@ -77,18 +77,54 @@ const COMMON_VIDEO_OPTIONS = {
     },
 };
 
-const OTHER_PROVIDER_OPTIONS = {
+const EXTERNAL_PROVIDER_OPTIONS = {
     settingsOptions: {
+        url: {
+            path: 'url',
+            label: { en: 'Video url', fr: 'Url de la vidéo' },
+            type: 'Text',
+            options: {
+                placeholder: 'Url',
+            },
+            bindable: true,
+        },
         ...COMMON_VIDEO_OPTIONS,
+    },
+};
+
+const WEWEB_PROVIDER_OPTIONS = {
+    settingsOptions: {
+        url: {
+            label: { en: 'File', fr: 'Fichier' },
+            type: 'Video',
+        },
         previewImage: {
             label: { en: 'Preview image', fr: "Image de d'aperçu" },
             type: 'Image',
+        },
+        ...COMMON_VIDEO_OPTIONS,
+        preload: {
+            label: { en: 'Preload', fr: 'Précharger' },
+            type: 'TextRadioGroup',
+            options: {
+                choices: [
+                    {
+                        default: true,
+                        value: false,
+                        title: { en: 'Start', fr: 'Début' },
+                        icon: 'none',
+                    },
+                    {
+                        value: true,
+                        title: { en: 'Center', fr: 'Milieu' },
+                        icon: 'tick',
+                    },
+                ],
+            },
         },
     },
 };
 
 export const getSettingsConfigurations = content => {
-    return content.provider === 'other' || content.provider === 'local'
-        ? OTHER_PROVIDER_OPTIONS
-        : { settingsOptions: { ...COMMON_VIDEO_OPTIONS } };
+    return content.provider === 'weweb' ? WEWEB_PROVIDER_OPTIONS : EXTERNAL_PROVIDER_OPTIONS;
 };

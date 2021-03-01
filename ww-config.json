@@ -9,14 +9,21 @@
             "en": "Vidéo"
         },
         "settingsOptions": {
-            "url": {
-                "path": "url",
-                "label": { "en": "Video url", "fr": "Url de la vidéo" },
-                "type": "Text",
-                "options": {
-                    "placeholder": "Url"
+            "provider": {
+                "label": {
+                    "en": "Platform",
+                    "fr": "Plateforme"
                 },
-                "bindable": true
+                "type": "TextSelect",
+                "options": {
+                    "options": [
+                        { "value": "weweb", "default": true, "label": { "en": "WeWeb", "fr": "WeWeb" } },
+                        { "value": "youtube", "label": { "en": "Youtube", "fr": "Youtube" } },
+                        { "value": "twitch", "label": { "en": "Twitch", "fr": "Twitch" } },
+                        { "value": "dailymotion", "label": { "en": "Dailymotion", "fr": "Dailymotion" } },
+                        { "value": "vimeo", "label": { "en": "Vimeo", "fr": "Vimeo" } }
+                    ]
+                }
             }
         }
     }

@@ -2,14 +2,14 @@
     <div class="ww-video">
         <div class="ww-video-container">
             <video
-                v-if="isVideo"
+                v-if="isWeWeb"
                 class="ww-video-element"
+                :class="{ 'ww-editing': isEditing }"
                 ref="videoPlayer"
-                preload="none"
                 playsinline
                 webkit-playsinline
+                v-bind="videoAttributes"
             >
-                <source :src="content.url" type="video/mp4" />
                 Sorry, your browser doesn't support embedded videos.
             </video>
             <iframe
@@ -32,7 +32,6 @@
 import { getSettingsConfigurations } from './configuration';
 
 export default {
-    name: '__COMPONENT_NAME__',
     props: {
         content: Object,
         /* wwEditor:start */
@@ -47,6 +46,7 @@ export default {
         loop: false,
         muted: false,
         previewImage: '',
+        preload: true,
     },
     data() {
         return {
@@ -58,48 +58,37 @@ export default {
     wwEditorConfiguration({ content }) {
         return getSettingsConfigurations(content);
     },
-    /* wwEditor:end */
     watch: {
-        content() {
-            this.handleVideoEvent();
-        },
-        'content.url'() {
-            if (!this.content.url) return;
-
-            const provider = this.getInfoFromUrl(this.content.url).provider;
+        'content.provider'() {
             this.$emit('update', {
-                provider: provider,
+                url: '',
+                previewImage: '',
+                preload: '',
             });
         },
-        'content.autoplay'() {
-            this.handleVideoEvent();
+        'content.autoplay'(newAuto, oldAuto) {
+            if (this.content.autoplay) {
+                this.$emit('update', {
+                    muted: true,
+                });
+            }
+            if (newAuto !== oldAuto && newAuto) {
+                this.updateweWeWebVideo();
+            }
         },
-        'content.controls'() {
-            this.handleVideoEvent();
-        },
-        'content.loop'() {
-            this.handleVideoEvent();
-        },
-        'content.muted'() {
-            this.handleVideoEvent();
-        },
-        'content.previewImage'() {
-            this.handleVideoEvent();
+        'content.loop'(newLoop, oldLoop) {
+            if (newLoop !== oldLoop && newLoop) {
+                this.updateweWeWebVideo();
+            }
         },
     },
+    /* wwEditor:end */
     computed: {
         videoElement() {
-            return this.isVideo ? this.$refs.video : null;
+            return this.isWeWeb ? this.$refs.video : null;
         },
-        isEditing() {
-            /* wwEditor:start */
-            return this.wwEditorState.editMode === wwLib.wwSectionHelper.EDIT_MODES.CONTENT;
-            /* wwEditor:end */
-            // eslint-disable-next-line no-unreachable
-            return false;
-        },
-        isVideo() {
-            return this.content.provider === 'other' || this.content.provider === 'local';
+        isWeWeb() {
+            return this.content.provider === 'weweb';
         },
         src() {
             if (!this.content.url) return;
@@ -141,6 +130,28 @@ export default {
 
             return src;
         },
+        videoAttributes() {
+            const attributes = {
+                src: this.content.url,
+                poster: this.poster,
+                muted: true,
+            };
+
+            if (this.content.autoplay) attributes.autoplay = true;
+            if (this.content.muted) attributes.muted = true;
+            if (this.content.controls) attributes.controls = true;
+            if (this.content.loop) attributes.loop = true;
+            if (this.content.preload) attributes.preload = true;
+
+            return attributes;
+        },
+        isEditing() {
+            /* wwEditor:start */
+            return this.wwEditorState.editMode === wwLib.wwSectionHelper.EDIT_MODES.CONTENT;
+            /* wwEditor:end */
+            // eslint-disable-next-line no-unreachable
+            return false;
+        },
     },
     methods: {
         getInfoFromUrl(url) {
@@ -177,89 +188,14 @@ export default {
                 };
             }
         },
-        handleLocalVideoOptions() {
-            if (!this.isVideo) return;
-
-            const { controls, loop, autoplay, muted, previewImage } = this.content;
-            const video = this.$refs.videoPlayer;
-
-            if (!video) {
-                return;
-            }
-
-            if (controls) {
-                video.setAttribute('controls', '');
-            } else {
-                video.removeAttribute('controls');
-            }
-
-            if (loop) {
-                video.setAttribute('loop', '');
-            } else {
-                video.removeAttribute('loop');
-            }
-
-            if (autoplay) {
-                video.setAttribute('autoplay', '');
-                video.play();
-                this.isVideoPlayed = true;
-            } else {
-                video.removeAttribute('autoplay');
-                video.pause();
-                this.isVideoPlayed = false;
-            }
-
-            if (muted) {
-                video.setAttribute('muted', '');
-            } else {
-                video.removeAttribute('muted');
-            }
-
-            if (previewImage && previewImage.length && previewImage.length > 1) {
-                video.setAttribute('poster', `${wwLib.wwUtils.getCdnPrefix()}${this.content.previewImage}`);
-            } else {
-                video.removeAttribute('poster');
-            }
-        },
-        handleVideoClick() {
-            if (!this.isVideo) return;
+        updateweWeWebVideo() {
+            if (this.content.provider !== 'weweb' || !this.$refs.videoPlayer) return;
 
             const video = this.$refs.videoPlayer;
-
-            if (!this.isVideoPlayed) {
-                video.play();
-                this.isVideoPlayed = true;
-            } else {
-                video.pause();
-                this.isVideoPlayed = false;
-            }
+            video.pause();
+            video.currentTime = 0;
+            video.play();
         },
-        handleVideoEvent() {
-            const videoEl = document.querySelector('.ww-video-element');
-
-            if (this.isEventListener) {
-                videoEl.removeEventListener('click', this.handleVideoClick);
-                this.isEventListener = false;
-            }
-
-            videoEl.addEventListener('click', this.handleVideoClick);
-            this.isEventListener = true;
-
-            this.$nextTick(() => {
-                this.handleLocalVideoOptions();
-            });
-        },
-    },
-    mounted() {
-        if (this.isVideo) {
-            this.handleLocalVideoOptions;
-        }
-
-        this.$nextTick(() => {
-            const videoEl = document.querySelector('.ww-video-element');
-            videoEl.addEventListener('click', this.handleVideoClick);
-            this.isEventListener = true;
-        });
     },
     beforeDestroy() {
         if (this.isEventListener) {
@@ -288,19 +224,11 @@ export default {
             width: 100%;
             height: 100%;
             overflow: hidden;
+
             &.ww-editing {
                 pointer-events: none;
             }
         }
     }
-    /* wwEditor:start */
-    .ww-orange-button {
-        position: absolute;
-        top: 0;
-        left: 0;
-        transform: translate(-50%, -50%);
-        z-index: 1;
-    }
-    /* wwEditor:end */
 }
 </style>
