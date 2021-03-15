@@ -8,6 +8,9 @@
             "fr": "Vidéo",
             "en": "Vidéo"
         },
+        "menuOptions": {
+            "sections": ["url"]
+        },
         "settingsOptions": {
             "provider": {
                 "label": {
