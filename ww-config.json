@@ -9,7 +9,7 @@
             "en": "Vidéo"
         },
         "menuOptions": {
-            "sections": ["url"]
+            "quick": { "sections": ["url"] }
         },
         "settingsOptions": {
             "provider": {
