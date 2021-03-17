@@ -9,7 +9,7 @@
             "en": "Vidéo"
         },
         "menuOptions": {
-            "quick": { "sections": ["url"] }
+            "quick": { "sections": ["url"], "bind": [{ "prop": "url", "label": { "en": "Bind video source" } }] }
         },
         "settingsOptions": {
             "provider": {
