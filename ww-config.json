@@ -9,7 +9,20 @@
             "en": "Vidéo"
         },
         "menuOptions": {
-            "quick": { "sections": ["url"] }
+            "quick": {
+                "sections": [
+                    "provider",
+                    "url",
+                    "file",
+                    "previewImage",
+                    "autoplay",
+                    "muted",
+                    "loop",
+                    "controls",
+                    "preload"
+                ],
+                "bind": [{ "prop": "url", "label": { "en": "Bind video url" } }]
+            }
         },
         "settingsOptions": {
             "provider": {
