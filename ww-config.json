@@ -27,6 +27,15 @@
                         { "value": "vimeo", "label": { "en": "Vimeo", "fr": "Vimeo" } }
                     ]
                 }
+            },
+            "url": {
+                "path": "url",
+                "label": { "en": "Video url", "fr": "Url de la vidéo" },
+                "type": "Text",
+                "options": {
+                    "placeholder": "Url"
+                },
+                "bindable": true
             }
         }
     }

@@ -40,6 +40,7 @@ export default {
     },
     wwDefaultContent: {
         url: 'https://youtu.be/76CMCIW-wGk',
+        file: '',
         provider: 'youtube',
         autoplay: false,
         controls: true,
@@ -62,6 +63,7 @@ export default {
         'content.provider'() {
             this.$emit('update', {
                 url: '',
+                file: '',
                 previewImage: '',
                 preload: '',
             });
@@ -92,6 +94,7 @@ export default {
         },
         src() {
             if (!this.content.url) return;
+
             let src = this.content.url;
             const provider = this.getInfoFromUrl(src).provider;
 
@@ -132,7 +135,7 @@ export default {
         },
         videoAttributes() {
             const attributes = {
-                src: this.content.url,
+                src: this.content.file,
                 poster: this.poster,
                 muted: true,
             };

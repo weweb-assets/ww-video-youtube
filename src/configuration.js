@@ -95,6 +95,15 @@ const EXTERNAL_PROVIDER_OPTIONS = {
 const WEWEB_PROVIDER_OPTIONS = {
     settingsOptions: {
         url: {
+            path: 'url',
+            label: { en: 'Video url', fr: 'Url de la vidéo' },
+            type: 'Text',
+            options: {
+                placeholder: 'Url',
+                disabled: true,
+            },
+        },
+        file: {
             label: { en: 'File', fr: 'Fichier' },
             type: 'Video',
         },
