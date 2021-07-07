@@ -3,9 +3,9 @@
         <div class="ww-video-container">
             <video
                 v-if="isWeWeb"
+                ref="videoPlayer"
                 class="ww-video-element"
                 :class="{ 'ww-editing': isEditing }"
-                ref="videoPlayer"
                 playsinline
                 webkit-playsinline
                 v-bind="videoAttributes"
@@ -33,11 +33,12 @@ import { getSettingsConfigurations } from './configuration';
 
 export default {
     props: {
-        content: Object,
+        content: { type: Object, required: true },
         /* wwEditor:start */
-        wwEditorState: Object,
+        wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
     },
+    emits: ['update:content:effect'],
     wwDefaultContent: {
         url: 'https://youtu.be/76CMCIW-wGk',
         file: '',
@@ -58,31 +59,6 @@ export default {
     /* wwEditor:start */
     wwEditorConfiguration({ content }) {
         return getSettingsConfigurations(content);
-    },
-    watch: {
-        'content.provider'() {
-            this.$emit('update', {
-                url: '',
-                file: '',
-                previewImage: '',
-                preload: '',
-            });
-        },
-        'content.autoplay'(newAuto, oldAuto) {
-            if (this.content.autoplay) {
-                this.$emit('update', {
-                    muted: true,
-                });
-            }
-            if (newAuto !== oldAuto && newAuto) {
-                this.updateweWeWebVideo();
-            }
-        },
-        'content.loop'(newLoop, oldLoop) {
-            if (newLoop !== oldLoop && newLoop) {
-                this.updateweWeWebVideo();
-            }
-        },
     },
     /* wwEditor:end */
     computed: {
@@ -156,6 +132,38 @@ export default {
             return false;
         },
     },
+    watch: {
+        'content.provider'() {
+            this.$emit('update:content:effect', {
+                url: '',
+                file: '',
+                previewImage: '',
+                preload: '',
+            });
+        },
+        'content.autoplay'(newAuto, oldAuto) {
+            if (this.content.autoplay) {
+                this.$emit('update:content:effect', {
+                    muted: true,
+                });
+            }
+            if (newAuto !== oldAuto && newAuto) {
+                this.updateweWeWebVideo();
+            }
+        },
+        'content.loop'(newLoop, oldLoop) {
+            if (newLoop !== oldLoop && newLoop) {
+                this.updateweWeWebVideo();
+            }
+        },
+    },
+    unmounted() {
+        if (this.isEventListener) {
+            const videoEl = document.querySelector('.ww-video-element');
+            videoEl.removeEventListener('click', this.handleVideoClick);
+            this.isEventListener = false;
+        }
+    },
     methods: {
         getInfoFromUrl(url) {
             if (!this.content.url) return {};
@@ -199,13 +207,6 @@ export default {
             video.currentTime = 0;
             video.play();
         },
-    },
-    beforeDestroy() {
-        if (this.isEventListener) {
-            const videoEl = document.querySelector('.ww-video-element');
-            videoEl.removeEventListener('click', this.handleVideoClick);
-            this.isEventListener = false;
-        }
     },
 };
 </script>
