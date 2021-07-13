@@ -112,7 +112,7 @@ export default {
         videoAttributes() {
             const attributes = {
                 src: this.content.file,
-                poster: this.poster,
+                poster: this.content.previewImage,
                 muted: true,
             };
 
