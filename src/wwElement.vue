@@ -39,17 +39,6 @@ export default {
         /* wwEditor:end */
     },
     emits: ['update:content:effect'],
-    wwDefaultContent: {
-        url: 'https://youtu.be/76CMCIW-wGk',
-        file: '',
-        provider: 'youtube',
-        autoplay: false,
-        controls: true,
-        loop: false,
-        muted: false,
-        previewImage: '',
-        preload: true,
-    },
     data() {
         return {
             isVideoPlayed: false,
