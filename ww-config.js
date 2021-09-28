@@ -23,8 +23,8 @@ export default {
                 bind: [{ prop: 'url', label: { en: 'Bind video url' } }],
             },
         },
+        icon: 'play',
     },
-    icon: 'play',
     properties: {
         provider: {
             label: {
