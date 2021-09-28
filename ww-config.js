@@ -24,6 +24,7 @@ export default {
             },
         },
     },
+    icon: 'play',
     properties: {
         provider: {
             label: {
