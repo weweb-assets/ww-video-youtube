@@ -29,8 +29,6 @@
 </template>
 
 <script>
-import { getSettingsConfigurations } from './configuration';
-
 export default {
     props: {
         content: { type: Object, required: true },
@@ -45,11 +43,6 @@ export default {
             isEventListener: false,
         };
     },
-    /* wwEditor:start */
-    wwEditorConfiguration({ content }) {
-        return getSettingsConfigurations(content);
-    },
-    /* wwEditor:end */
     computed: {
         videoElement() {
             return this.isWeWeb ? this.$refs.video : null;
