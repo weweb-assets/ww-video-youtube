@@ -58,7 +58,7 @@ export default {
         },
         file: {
             label: { en: 'File', fr: 'Fichier' },
-            type: 'File',
+            type: 'Video',
             section: 'settings',
             bindable: true,
             hidden: content => content.provider !== 'weweb',
