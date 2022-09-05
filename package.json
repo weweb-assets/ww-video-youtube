@@ -1,7 +1,7 @@
 {
-    "name": "ww-video",
+    "name": "ww-video-vimeo",
     "repository": {
-        "url": "https://github.com/weweb-assets/ww-video"
+        "url": "https://github.com/weweb-assets/ww-video-vimeo"
     },
     "version": "3.1.0",
     "scripts": {
