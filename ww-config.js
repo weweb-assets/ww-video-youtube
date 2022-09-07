@@ -4,8 +4,8 @@ export default {
     },
     editor: {
         label: {
-            fr: 'Vidéo - Vimeo',
-            en: 'Vidéo - Vimeo',
+            fr: 'Vidéo - Youtube',
+            en: 'Vidéo - Youtube',
         },
         icon: 'play',
     },
@@ -24,19 +24,23 @@ export default {
                 placeholder: 'Url',
             },
             bindable: true,
-            defaultValue: '',
+            defaultValue: 'https://www.youtube.com/watch?v=r8z4Omw-D2s',
         },
         videoStartTime: {
             label: {
                 en: 'Start time (s)',
             },
             type: 'Number',
-            options: content => ({ min: 0, max: content.videoDuration }),
+            options: (_, sidepanelContent) => {
+                console.log(sidepanelContent.videoDuration);
+                return { min: 0, max: sidepanelContent.videoDuration };
+            },
             section: 'settings',
             bindable: true,
             defaultValue: 0,
         },
         videoDuration: {
+            editorOnly: true,
             defaultValue: 0,
             hidden: true,
         },

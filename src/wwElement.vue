@@ -1,11 +1,11 @@
 <template>
-    <div class="ww-video-vimeo" :class="{ editing: isEditing }">
-        <div class="video-player" ref="videoPlayer"></div>
+    <div class="ww-video-youtube" :class="{ editing: isEditing }">
+        <div ref="videoPlayer"></div>
     </div>
 </template>
 
 <script>
-import Vimeo from '@vimeo/player';
+import YouTubePlayer from 'youtube-player';
 
 export default {
     props: {
@@ -15,7 +15,7 @@ export default {
         wwEditorState: { type: Object, required: true },
         /* wwEditor:end */
     },
-    emits: ['update:content:effect', 'update:sidepanel-content', 'trigger-event'],
+    emits: ['update:sidepanel-content', 'trigger-event'],
     setup(props) {
         const player = null;
         const { variableValue: isPlayedVariableValue, setValue: setIsPlayedValue } =
@@ -24,6 +24,7 @@ export default {
                 name: 'Is Played',
                 type: 'boolean',
                 defaultValue: false,
+                readonly: true,
             });
         const { variableValue: currentTimeVariableValue, setValue: setCurrentTimeValue } =
             wwLib.wwVariable.useComponentVariable({
@@ -31,9 +32,15 @@ export default {
                 name: 'Current time',
                 type: 'number',
                 defaultValue: 0,
+                readonly: true,
             });
 
         return { player, isPlayedVariableValue, setIsPlayedValue, currentTimeVariableValue, setCurrentTimeValue };
+    },
+    data() {
+        return {
+            timeUpdater: null,
+        };
     },
     computed: {
         isEditing() {
@@ -44,93 +51,96 @@ export default {
             return false;
         },
         videoId() {
-            if (!this.content.url) return '';
-            return this.content.url.split('m/')[1].split('?')[0];
+            if (!this.content.url || typeof this.content.url !== 'string') return '';
+
+            if (this.content.url.indexOf('youtube.com') !== -1) {
+                return this.content.url.split('v=')[1].split('?')[0];
+            } else if (this.content.url.indexOf('youtu.be') !== -1) {
+                return this.content.url.split('be/')[1].split('?')[0];
+            }
+
+            return '';
         },
     },
     watch: {
-        isEditing: {
-            async handler() {
-                await this.initPlayer();
-            },
+        isEditing() {
+            this.initPlayer();
         },
-        'content.url': {
-            async handler() {
-                await this.initPlayer();
-            },
+        'content.url'() {
+            this.initPlayer();
         },
-        'content.videoStartTime': {
-            async handler() {
-                await this.initPlayer();
-            },
-        },
-        'content.controls': {
-            async handler() {
-                await this.initPlayer();
-            },
+        'content.controls'() {
+            this.initPlayer();
         },
         'content.loop'(value) {
             if (this.player) this.player.setLoop(value);
         },
         'content.muted'(value) {
-            if (this.player) this.player.setMuted(value);
+            if (this.player) {
+                if (value) {
+                    this.player.mute();
+                } else {
+                    this.player.unMute();
+                }
+            }
         },
     },
     methods: {
         async initPlayer() {
+            if (!this.videoId) return;
             if (this.player) await this.player.destroy();
 
-            this.$nextTick(async () => {
-                const el = this.$refs.videoPlayer;
-                let options = {
-                    id: this.videoId,
-                    controls: this.content.controls,
-                };
-                this.player = new Vimeo(el, options);
+            const el = this.$refs.videoPlayer;
+            this.player = await YouTubePlayer(el);
+            const settings = { videoId: this.videoId, startSeconds: this.content.videoStartTime };
 
+            this.player.on('ready', async () => {
+                if (!this.content.autoplay) this.player.cueVideoById(settings);
+                if (this.content.muted) this.player.mute();
+                if (this.content.loop) this.player.setLoop(true);
+
+                /* wwEditor:start */
                 // Get the video duration to adapt the option of videoStartTime
                 const videoDuration = await this.player.getDuration();
-                this.$nextTick(() => {
-                    if (this.isEditing) this.$emit('update:content:effect', { videoDuration });
-                });
+                if (this.isEditing)
+                    this.$emit('update:sidepanel-content', {
+                        path: 'videoDuration',
+                        value: videoDuration,
+                    });
+                /* wwEditor:end */
 
-                this.player.setCurrentTime(this.content.videoStartTime);
-                this.player.setLoop(this.content.loop);
-                this.player.setMuted(this.content.muted);
-
-                // Dont play the video & dont init events in edition mode
                 if (this.isEditing) return;
+                this.player.loadVideoById(settings);
+                this.timeUpdater = setInterval(await this.updateCurrentTime, 250);
 
-                if (this.content.autoplay) this.player.play();
-
-                this.player.on('timeupdate', data => {
-                    this.setCurrentTimeValue(data.seconds);
-                });
-
-                this.player.on('play', data => {
-                    this.setIsPlayedValue(true);
-                    this.$emit('trigger-event', { name: 'play', event: { value: data.seconds } });
-                });
-
-                this.player.on('pause', data => {
-                    this.setIsPlayedValue(false);
-                    this.$emit('trigger-event', { name: 'pause', event: { value: data.seconds } });
-                });
-
-                this.player.on('ended', () => {
-                    this.setIsPlayedValue(false);
-                    this.$emit('trigger-event', { name: 'end', event: {} });
+                this.player.on('stateChange', event => {
+                    switch (event.data) {
+                        // https://developers.google.com/youtube/iframe_api_reference#Events
+                        case 1:
+                            this.setIsPlayedValue(true);
+                            this.$emit('trigger-event', { name: 'play', event: { value: data.seconds } });
+                            break;
+                        case 2:
+                            this.setIsPlayedValue(false);
+                            this.$emit('trigger-event', { name: 'pause', event: { value: data.seconds } });
+                            break;
+                        case 0:
+                            this.setIsPlayedValue(false);
+                            this.$emit('trigger-event', { name: 'end', event: {} });
+                            break;
+                        default:
+                            break;
+                    }
                 });
             });
         },
+        async updateCurrentTime() {
+            const currentTime = await this.player.getCurrentTime();
+            this.setCurrentTimeValue(Math.ceil(currentTime * 10) / 10);
+        },
     },
     beforeUnmount() {
-        if (this.player) {
-            this.player.off('timeupdate');
-            this.player.off('play');
-            this.player.off('pause');
-            this.player.off('ended');
-        }
+        clearInterval(this.timeUpdater);
     },
     async mounted() {
         await this.initPlayer();
@@ -139,7 +149,7 @@ export default {
 </script>
 
 <style lang="scss">
-.ww-video-vimeo {
+.ww-video-youtube {
     position: relative;
     overflow: hidden;
     aspect-ratio: 16 / 9;
@@ -148,7 +158,7 @@ export default {
         pointer-events: none;
     }
 
-    .video-player iframe {
+    iframe {
         position: absolute;
         top: 0;
         left: 0;
