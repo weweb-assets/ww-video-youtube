@@ -18,10 +18,10 @@ export default {
     emits: ['update:sidepanel-content', 'trigger-event'],
     setup(props) {
         const player = null;
-        const { variableValue: isPlayedVariableValue, setValue: setIsPlayedValue } =
+        const { variableValue: isPlayingVariableValue, setValue: setIsPlayingValue } =
             wwLib.wwVariable.useComponentVariable({
                 uid: props.uid,
-                name: 'Is Played',
+                name: 'Is Playing',
                 type: 'boolean',
                 defaultValue: false,
                 readonly: true,
@@ -35,7 +35,7 @@ export default {
                 readonly: true,
             });
 
-        return { player, isPlayedVariableValue, setIsPlayedValue, currentTimeVariableValue, setCurrentTimeValue };
+        return { player, isPlayingVariableValue, setIsPlayingValue, currentTimeVariableValue, setCurrentTimeValue };
     },
     data() {
         return {
@@ -91,11 +91,13 @@ export default {
             if (this.player) await this.player.destroy();
 
             const el = this.$refs.videoPlayer;
-            this.player = await YouTubePlayer(el);
-            const settings = { videoId: this.videoId, startSeconds: this.content.videoStartTime };
+            this.player = await YouTubePlayer(el, {
+                videoId: this.videoId,
+                startSeconds: this.content.videoStartTime,
+                playerVars: { controls: this.content.controls, autoplay: this.isEditing ? 0 : this.content.autoplay },
+            });
 
             this.player.on('ready', async () => {
-                if (!this.content.autoplay) this.player.cueVideoById(settings);
                 if (this.content.muted) this.player.mute();
                 if (this.content.loop) this.player.setLoop(true);
 
@@ -117,15 +119,15 @@ export default {
                     switch (event.data) {
                         // https://developers.google.com/youtube/iframe_api_reference#Events
                         case 1:
-                            this.setIsPlayedValue(true);
+                            this.setIsPlayingValue(true);
                             this.$emit('trigger-event', { name: 'play', event: { value: data.seconds } });
                             break;
                         case 2:
-                            this.setIsPlayedValue(false);
+                            this.setIsPlayingValue(false);
                             this.$emit('trigger-event', { name: 'pause', event: { value: data.seconds } });
                             break;
                         case 0:
-                            this.setIsPlayedValue(false);
+                            this.setIsPlayingValue(false);
                             this.$emit('trigger-event', { name: 'end', event: {} });
                             break;
                         default:
