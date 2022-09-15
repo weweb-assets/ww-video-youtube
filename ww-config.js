@@ -52,18 +52,18 @@ export default {
                 choices: [
                     {
                         default: true,
-                        value: false,
+                        value: 0,
                         title: { en: 'Start', fr: 'Début' },
                         icon: 'none',
                     },
                     {
-                        value: true,
+                        value: 1,
                         title: { en: 'Center', fr: 'Milieu' },
                         icon: 'tick',
                     },
                 ],
             },
-            defaultValue: false,
+            defaultValue: 0,
         },
         muted: {
             label: { en: 'Muted', fr: 'Muet' },
@@ -114,19 +114,19 @@ export default {
             options: {
                 choices: [
                     {
-                        value: false,
+                        value: 0,
                         title: { en: 'Start', fr: 'Début' },
                         icon: 'none',
                     },
                     {
                         default: true,
-                        value: true,
+                        value: 1,
                         title: { en: 'Center', fr: 'Milieu' },
                         icon: 'tick',
                     },
                 ],
             },
-            defaultValue: true,
+            defaultValue: 1,
         },
     },
 };
