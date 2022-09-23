@@ -4,11 +4,16 @@ export default {
     },
     editor: {
         label: {
-            fr: 'Vidéo - Vimeo',
-            en: 'Vidéo - Vimeo',
+            fr: 'Vidéo - Youtube',
+            en: 'Vidéo - Youtube',
         },
         icon: 'play',
     },
+    triggerEvents: [
+        { name: 'play', label: { en: 'On play' }, event: { value: '' }, default: true },
+        { name: 'pause', label: { en: 'On pause' }, event: { value: '' } },
+        { name: 'end', label: { en: 'On end' }, event: { value: '' } },
+    ],
     properties: {
         url: {
             path: 'url',
@@ -19,8 +24,25 @@ export default {
                 placeholder: 'Url',
             },
             bindable: true,
-            hidden: content => content.provider === 'weweb',
-            defaultValue: 'https://youtu.be/76CMCIW-wGk',
+            defaultValue: 'https://www.youtube.com/watch?v=r8z4Omw-D2s',
+        },
+        videoStartTime: {
+            label: {
+                en: 'Start time (s)',
+            },
+            type: 'Number',
+            options: (_, sidepanelContent) => {
+                console.log(sidepanelContent.videoDuration);
+                return { min: 0, max: sidepanelContent.videoDuration };
+            },
+            section: 'settings',
+            bindable: true,
+            defaultValue: 0,
+        },
+        videoDuration: {
+            editorOnly: true,
+            defaultValue: 0,
+            hidden: true,
         },
         autoplay: {
             label: { en: 'Autoplay', fr: 'Lecture automatique' },
@@ -30,18 +52,18 @@ export default {
                 choices: [
                     {
                         default: true,
-                        value: false,
+                        value: 0,
                         title: { en: 'Start', fr: 'Début' },
                         icon: 'none',
                     },
                     {
-                        value: true,
+                        value: 1,
                         title: { en: 'Center', fr: 'Milieu' },
                         icon: 'tick',
                     },
                 ],
             },
-            defaultValue: false,
+            defaultValue: 0,
         },
         muted: {
             label: { en: 'Muted', fr: 'Muet' },
@@ -92,19 +114,19 @@ export default {
             options: {
                 choices: [
                     {
-                        value: false,
+                        value: 0,
                         title: { en: 'Start', fr: 'Début' },
                         icon: 'none',
                     },
                     {
                         default: true,
-                        value: true,
+                        value: 1,
                         title: { en: 'Center', fr: 'Milieu' },
                         icon: 'tick',
                     },
                 ],
             },
-            defaultValue: true,
+            defaultValue: 1,
         },
     },
 };
