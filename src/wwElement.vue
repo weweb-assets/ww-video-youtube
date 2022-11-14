@@ -4,6 +4,7 @@
     </div>
 </template>
 
+
 <script>
 import YouTubePlayer from 'youtube-player';
 
@@ -84,17 +85,25 @@ export default {
                 }
             }
         },
+        'content.autoplay'(value) {
+            if (!this.content.muted) this.$emit('update:content', { muted: true });
+            if (this.player && value && !this.isEditing) {
+                this.player.loadVideoById({ videoId: this.videoId, startSeconds: this.content.videoStartTime });
+            }
+        },
     },
     methods: {
         async initPlayer() {
+            if (this.timeUpdater) clearInterval(this.timeUpdater);
             if (!this.videoId) return;
             if (this.player) await this.player.destroy();
 
             const el = this.$refs.videoPlayer;
             this.player = await YouTubePlayer(el, {
                 videoId: this.videoId,
-                startSeconds: this.content.videoStartTime,
-                playerVars: { controls: this.content.controls, autoplay: this.isEditing ? 0 : this.content.autoplay },
+                playerVars: {
+                    controls: this.content.controls ? 1 : 0,
+                },
             });
 
             this.player.on('ready', async () => {
@@ -112,23 +121,37 @@ export default {
                 /* wwEditor:end */
 
                 if (this.isEditing) return;
-                this.player.loadVideoById(settings);
+                if (this.content.autoplay) {
+                    this.player.loadVideoById({ videoId: this.videoId, startSeconds: this.content.videoStartTime });
+                } else {
+                    this.player.cueVideoById({ videoId: this.videoId, startSeconds: this.content.videoStartTime });
+                }
+
                 this.timeUpdater = setInterval(await this.updateCurrentTime, 250);
 
-                this.player.on('stateChange', event => {
+                this.player.on('stateChange', async event => {
                     switch (event.data) {
                         // https://developers.google.com/youtube/iframe_api_reference#Events
                         case 1:
                             this.setIsPlayingValue(true);
-                            this.$emit('trigger-event', { name: 'play', event: { value: data.seconds } });
+                            this.$emit('trigger-event', {
+                                name: 'play',
+                                event: { value: await this.player.getCurrentTime() },
+                            });
                             break;
                         case 2:
                             this.setIsPlayingValue(false);
-                            this.$emit('trigger-event', { name: 'pause', event: { value: data.seconds } });
+                            this.$emit('trigger-event', {
+                                name: 'pause',
+                                event: { value: await this.player.getCurrentTime() },
+                            });
                             break;
                         case 0:
                             this.setIsPlayingValue(false);
-                            this.$emit('trigger-event', { name: 'end', event: {} });
+                            this.$emit('trigger-event', {
+                                name: 'end',
+                                event: { value: await this.player.getCurrentTime() },
+                            });
                             break;
                         default:
                             break;
@@ -149,6 +172,7 @@ export default {
     },
 };
 </script>
+
 
 <style lang="scss">
 .ww-video-youtube {
@@ -171,3 +195,5 @@ export default {
     }
 }
 </style>
+
+
