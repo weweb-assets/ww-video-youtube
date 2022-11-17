@@ -1,6 +1,6 @@
 <template>
     <div class="ww-video-youtube" :class="{ editing: isEditing }">
-        <div ref="videoPlayer" :key="componentKey"></div>
+        <div ref="videoPlayer"></div>
     </div>
 </template>
 
@@ -40,7 +40,6 @@ export default {
     data() {
         return {
             timeUpdater: null,
-            componentKey: 0,
         };
     },
     computed: {
@@ -73,9 +72,6 @@ export default {
         'content.controls'() {
             this.initPlayer();
         },
-        'content.loop'(value) {
-            if (this.player) this.player.setLoop(value);
-        },
         'content.muted'(value) {
             if (this.player) {
                 if (value) {
@@ -103,24 +99,12 @@ export default {
             this.player = await YouTubePlayer(el, {
                 videoId: this.videoId,
                 playerVars: {
-                    playlist: this.videoId,
                     controls: this.content.controls ? 1 : 0,
-                    loop: this.content.loop ? 1 : 0,
                 },
             });
 
-            // if (this.content.loop) {
-            //     const playlist = `&playlist=${this.videoId}`;
-            //     const iframe = await this.player.getIframe();
-
-            //     iframe.src = iframe.src + playlist;
-
-            //     this.componentKey += 1;
-            // }
-
             this.player.on('ready', async () => {
                 if (this.content.muted) this.player.mute();
-                if (this.content.loop) this.player.setLoop(true);
 
                 /* wwEditor:start */
                 // Get the video duration to adapt the option of videoStartTime
@@ -164,6 +148,8 @@ export default {
                                 name: 'end',
                                 event: { value: await this.player.getCurrentTime() },
                             });
+
+                            if (this.content.loop) await this.player.seekTo(0);
                             break;
                         default:
                             break;
