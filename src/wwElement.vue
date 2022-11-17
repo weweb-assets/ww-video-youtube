@@ -1,9 +1,8 @@
 <template>
     <div class="ww-video-youtube" :class="{ editing: isEditing }">
-        <div ref="videoPlayer"></div>
+        <div ref="videoPlayer" :key="componentKey"></div>
     </div>
 </template>
-
 
 <script>
 import YouTubePlayer from 'youtube-player';
@@ -41,6 +40,7 @@ export default {
     data() {
         return {
             timeUpdater: null,
+            componentKey: 0,
         };
     },
     computed: {
@@ -99,12 +99,24 @@ export default {
             if (this.player) await this.player.destroy();
 
             const el = this.$refs.videoPlayer;
+
             this.player = await YouTubePlayer(el, {
                 videoId: this.videoId,
                 playerVars: {
+                    playlist: this.videoId,
                     controls: this.content.controls ? 1 : 0,
+                    loop: this.content.loop ? 1 : 0,
                 },
             });
+
+            // if (this.content.loop) {
+            //     const playlist = `&playlist=${this.videoId}`;
+            //     const iframe = await this.player.getIframe();
+
+            //     iframe.src = iframe.src + playlist;
+
+            //     this.componentKey += 1;
+            // }
 
             this.player.on('ready', async () => {
                 if (this.content.muted) this.player.mute();
@@ -173,7 +185,6 @@ export default {
 };
 </script>
 
-
 <style lang="scss">
 .ww-video-youtube {
     position: relative;
@@ -195,5 +206,3 @@ export default {
     }
 }
 </style>
-
-
