@@ -7,7 +7,7 @@ export default {
             fr: 'Vidéo - Youtube',
             en: 'Vidéo - Youtube',
         },
-        icon: 'play',
+        icon: 'logos/youtube',
     },
     triggerEvents: [
         { name: 'play', label: { en: 'On play' }, event: { value: '' }, default: true },
