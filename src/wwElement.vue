@@ -4,7 +4,6 @@
     </div>
 </template>
 
-
 <script>
 import YouTubePlayer from 'youtube-player';
 
@@ -73,9 +72,6 @@ export default {
         'content.controls'() {
             this.initPlayer();
         },
-        'content.loop'(value) {
-            if (this.player) this.player.setLoop(value);
-        },
         'content.muted'(value) {
             if (this.player) {
                 if (value) {
@@ -99,6 +95,7 @@ export default {
             if (this.player) await this.player.destroy();
 
             const el = this.$refs.videoPlayer;
+
             this.player = await YouTubePlayer(el, {
                 videoId: this.videoId,
                 playerVars: {
@@ -108,7 +105,6 @@ export default {
 
             this.player.on('ready', async () => {
                 if (this.content.muted) this.player.mute();
-                if (this.content.loop) this.player.setLoop(true);
 
                 /* wwEditor:start */
                 // Get the video duration to adapt the option of videoStartTime
@@ -152,6 +148,8 @@ export default {
                                 name: 'end',
                                 event: { value: await this.player.getCurrentTime() },
                             });
+
+                            if (this.content.loop) await this.player.seekTo(0);
                             break;
                         default:
                             break;
@@ -172,7 +170,6 @@ export default {
     },
 };
 </script>
-
 
 <style lang="scss">
 .ww-video-youtube {
@@ -195,5 +192,3 @@ export default {
     }
 }
 </style>
-
-
