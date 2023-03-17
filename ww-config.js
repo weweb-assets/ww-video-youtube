@@ -73,6 +73,13 @@ export default {
             type: 'OnOff',
             section: 'settings',
             defaultValue: false,
+            bindable: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: 'boolean',
+                tooltip: 'A boolean that defines if the video is muted: `true | false`',
+            },
+            /* wwEditor:end */
         },
         loop: {
             label: { en: 'Loop', fr: 'Lecture en boucle' },

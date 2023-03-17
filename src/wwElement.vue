@@ -82,14 +82,9 @@ export default {
             }
         },
         'content.autoplay'(value) {
-            const lastMutedValue = this.content.muted;
-
             if (this.player && value && !this.isEditing) {
-                this.$emit('update:content', { muted: lastMutedValue });
                 this.player.loadVideoById({ videoId: this.videoId, startSeconds: this.content.videoStartTime });
             }
-
-            if (!this.content.muted) this.$emit('update:content', { muted: true });
         },
     },
     methods: {
