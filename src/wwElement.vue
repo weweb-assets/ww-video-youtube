@@ -34,8 +34,23 @@ export default {
                 defaultValue: 0,
                 readonly: true,
             });
+        const { variableValue: videoDuration, setValue: setVideoDuration } = wwLib.wwVariable.useComponentVariable({
+            uid: props.uid,
+            name: 'video Duration',
+            type: 'number',
+            defaultValue: 0,
+            readonly: true,
+        });
 
-        return { player, isPlayingVariableValue, setIsPlayingValue, currentTimeVariableValue, setCurrentTimeValue };
+        return {
+            player,
+            isPlayingVariableValue,
+            setIsPlayingValue,
+            currentTimeVariableValue,
+            setCurrentTimeValue,
+            videoDuration,
+            setVideoDuration,
+        };
     },
     data() {
         return {
@@ -108,6 +123,7 @@ export default {
                 /* wwEditor:start */
                 // Get the video duration to adapt the option of videoStartTime
                 const videoDuration = await this.player.getDuration();
+                this.setVideoDuration(videoDuration);
                 if (this.isEditing)
                     this.$emit('update:sidepanel-content', {
                         path: 'videoDuration',
