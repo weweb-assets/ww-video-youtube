@@ -161,6 +161,18 @@ export default {
             const currentTime = await this.player.getCurrentTime();
             this.setCurrentTimeValue(Math.ceil(currentTime * 10) / 10);
         },
+        playVideo() {
+            if (!this.player) return;
+            this.player.playVideo();
+        },
+        pauseVideo() {
+            if (!this.player) return;
+            this.player.pauseVideo();
+        },
+        seekTo(time) {
+            if (!this.player) return;
+            this.player.seekTo(time);
+        },
     },
     beforeUnmount() {
         clearInterval(this.timeUpdater);
