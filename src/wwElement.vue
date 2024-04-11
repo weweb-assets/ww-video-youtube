@@ -90,6 +90,8 @@ export default {
     },
     methods: {
         async initPlayer() {
+            // Prevent adding the player with http: protocol and having mixed content issues
+            if (window.__WW_IS_PRERENDER__) return;
             if (this.timeUpdater) clearInterval(this.timeUpdater);
             if (!this.videoId) return;
             if (this.player) await this.player.destroy();
