@@ -26,11 +26,11 @@ Renders a YouTube video player with configuration options and playback control m
 - pause: Triggered when video is paused. Value is current time in seconds. Payload: {value: number}
 - end: Triggered when video ends. Value is current time in seconds. Payload: {value: number}
 
-***Internal Variables:***
+***Exposed Variables:***
 - Is Playing: boolean - Indicates if video is currently playing. (Path: variables['current_element_uid-Is Playing'])
 - Current time: number - Current video playback time in seconds. (Path: variables['current_element_uid-Current time'])
 
-***Element Actions:*** //OPTIONAL
+***Exposed Element Actions:*** //OPTIONAL
 - playVideo: (no args) Play video
 - pauseVideo: (no args) Pause video
 - seekTo: (arg1 (time in seconds): number) Go to time
